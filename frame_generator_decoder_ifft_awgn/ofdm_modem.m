@@ -28,5 +28,5 @@ frame_fd_noise = fft(frame_td_noise);
 writematrix([real(frame_fd_noise), imag(frame_fd_noise)], "frame_fd_noise.txt", "Delimiter", ",")
 
 %% Decoded message from frame in frequency domain
-decoded_message = decode_frame(frame, M, N_inf, fr_len, nulls_idx, pilots); % decoding frame
+decoded_message = decode_frame(frame_fd_noise, M, N_inf, fr_len, nulls_idx, pilots); % decoding frame
 writematrix(decoded_message, "decoded_message.txt", "Delimiter", ",")
