@@ -1,3 +1,6 @@
+% 25.03.24
+% result of each block is written into .txt file
+
 clear all; close all; clc
 %% parameters
 M = 16; % e.g. QAM-16 

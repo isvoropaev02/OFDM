@@ -1,3 +1,6 @@
+% 25.03.24
+% added_description
+
 function vec_pilots = pilots_vector(fr_len, N_inf, nulls_idx, pilots)
 % Generates the pilot signals
 % Inputs:       fr_len    : Length of the frame

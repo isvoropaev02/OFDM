@@ -1,3 +1,6 @@
+% 25.03.24
+% added_description
+
 function frame = generate_frame(message, M, N_inf, fr_len, nulls_idx, pilots)
 % Assebles the frame according to the structure
 % Inputs:       message   : Array of information bytes or numbers

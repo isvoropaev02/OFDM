@@ -1,3 +1,6 @@
+% 25.03.24
+% added_description
+
 function [inf_idx, pilot_idx] = make_frame_structure(fr_len, N_inf, nulls_idx)
 % Generates the positions of pilots and information symbols in frame
 % Inputs:       fr_len    : Length of the frame

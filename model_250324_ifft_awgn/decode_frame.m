@@ -1,3 +1,6 @@
+% 25.03.24
+% added description
+
 function message = decode_frame(frame, M, N_inf, fr_len, nulls_idx, pilots)
 % Decodes information symbols in the frame
 % Inputs:       frame     : Array of modulated signal
