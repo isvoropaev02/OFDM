@@ -6,6 +6,7 @@ clear all, clc, close all
 
 signal_length = 128;
 SNR_dB = 20;
+qammod()
 
 %QPSK signal
 signal_r=2*(rand([signal_length,1])>0.5)-1;

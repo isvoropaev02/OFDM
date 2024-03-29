@@ -13,7 +13,7 @@ function vec_pilots = pilots_vector(fr_len, N_inf, nulls_idx, pilots)
 N_pil = fr_len - N_inf - length(nulls_idx); % number of pilots in the frame
 
 %% pilots vector
-pilots_len_psudo = floor(N_pil/length(pilots)); % how many full pilon templates fit in the frame
+pilots_len_psudo = floor(N_pil/length(pilots)); % how many full pilot templates fit in the frame
 
 % linear algebra tricks:
 mat_1 = pilots*ones(1, pilots_len_psudo); % rank-one matrix

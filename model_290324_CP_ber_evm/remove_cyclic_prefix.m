@@ -2,7 +2,7 @@
 % function created
 
 function frame_without_prefix = remove_cyclic_prefix(frame_td_with_prefix, l)
-% adds a cyclic prefix to signal in time domain
+% removes a cyclic prefix to signal in time domain
 % Inputs:       frame_td_with_prefix  : The frame of symbols after ifft
 %               l                     : The length of cyclic prefix (expected value = frame_size/2)
 
