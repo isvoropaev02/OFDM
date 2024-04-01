@@ -20,9 +20,9 @@ end
 
 %% plot IR
 figure()
-plot(real(h), 'DisplayName','real')
+scatter(real(h), 'DisplayName','real')
 hold on
-plot(imag(h), 'DisplayName','imag')
+scatter(imag(h), 'DisplayName','imag')
 title('Impulse response of the channel')
 xlabel('Time')
 ylabel('Singal')

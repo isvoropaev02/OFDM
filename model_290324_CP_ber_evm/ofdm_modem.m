@@ -1,12 +1,14 @@
 % main performance file
-% 29.03.24
 % result of each block is written into .txt file
+
+% 01.04.2024
+% using lteEVM to compare my evm with something
 
 clear all; close all; clc
 %% parameters
 M = 16; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 64; % the length of OFDM frame
-SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 12; % [dBW] the signal power is normalized to 1 W
 cp_length = fr_len/2; % the size of cyclic prefix
 
 %% message to transmit and recieve
@@ -43,7 +45,8 @@ writematrix(dec2bin(decoded_message), "decoded_message.txt", "Delimiter", ",");
 
 %% Metrics calculation
 ber = evaluate_ber(message, decoded_message, M);
-evm_evaluator = comm.EVM;
-evm_comm = evm_evaluator(info_frame, info_frame_fd);
-evm_my = evaluate_evm(info_frame, info_frame_fd);
-writematrix([ber; evm_my; evm_comm], "metrics.txt", "Delimiter", ",");
+%evm_evaluator = comm.EVM;
+%evm_comm = evm_evaluator(info_frame, info_frame_fd);
+evm_matlab = lteEVM(info_frame_fd, info_frame);
+evm_my = evaluate_evm(info_frame_fd, info_frame);
+writematrix([ber; evm_my; evm_matlab.RMS], "metrics.txt", "Delimiter", ",");
