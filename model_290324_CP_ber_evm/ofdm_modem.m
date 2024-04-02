@@ -53,3 +53,7 @@ evm_my = evaluate_evm(info_frame_fd, info_frame);
 writematrix(["BER_my" "BER_matlab" "EVM_my" "EVM_matlab"; ...
                 ber_my ber_matlab evm_my evm_matlab.RMS], ...
                 "metrics.txt", "Delimiter", "\t");
+
+
+% to check the awgn function 
+% >>20*log10(sum(abs(info_frame_td-info_frame_td_noise))/sum(abs(info_frame_td)))

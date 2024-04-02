@@ -14,15 +14,15 @@ path_gain_lin=10.^(path_gain_db/10); % power gain in linear scale
 temp=(randn(1,L)+1i*randn(1,L)) ./ sqrt(2); % 1 W gain coefficients
 
 for k=1:L
-  h(path_delay(k))=sqrt(path_gain_lin(k)).*temp(k);
+    h(path_delay(k))=sqrt(path_gain_lin(k)).*temp(k);
 end
 
 
 %% plot IR
 figure()
-scatter(real(h), 'DisplayName','real')
+plot(real(h), 'DisplayName','real')
 hold on
-scatter(imag(h), 'DisplayName','imag')
+plot(imag(h), 'DisplayName','imag')
 title('Impulse response of the channel')
 xlabel('Time')
 ylabel('Singal')
@@ -30,9 +30,29 @@ legend()
 
 %% output
 output_signal = conv(input_signal, h, 'full');
+output_signal_same = conv(input_signal, h, 'same');
+
+%% plot output
+figure()
+plot(real(output_signal), 'DisplayName','real')
+hold on
+plot(imag(output_signal), 'DisplayName','imag')
+title('Signal after channel conv(full)')
+xlabel('Time')
+ylabel('Singal')
+legend()
+
+figure()
+plot(real(output_signal_same), 'DisplayName','real')
+hold on
+plot(imag(output_signal_same), 'DisplayName','imag')
+title('Signal after channel conv(same)')
+xlabel('Time')
+ylabel('Singal')
+legend()
 
 end
 
 
 % 30.03.2024.
-% function created
+% output signal plots

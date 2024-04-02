@@ -13,7 +13,7 @@ signal_i=2*(rand([signal_length,1])>0.5)-1;
 QPSK=signal_r+1i*signal_i;
 size(QPSK)
 
-td_qpsk = ifft(QPSK);
+%td_qpsk = ifft(QPSK);
 
 figure
 plot(real(td_qpsk))
