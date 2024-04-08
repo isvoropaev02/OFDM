@@ -11,7 +11,7 @@ fr_len = 64; % the length of OFDM frame
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
 cp_length = fr_len/2; % the size of cyclic prefix
 path_delay = [1 4 10];
-path_gain_db = [0 -10 -30];
+path_gain_db = [0 -15 -25];
 
 %% message to transmit and recieve (block "Bits stream")
 message = randi([0 M-1], fr_len, 1); % decimal information symbols
@@ -30,8 +30,21 @@ writematrix([real(info_frame_td), imag(info_frame_td)], "info_frame_td.txt", "De
 writematrix([real(pilots_frame_td), imag(pilots_frame_td)], "pilots_frame_td.txt", "Delimiter", ",");
 
 %% Channel
-info_frame_td_channel = simulate_Rayleigh_channel(info_frame_td, path_delay, path_gain_db);
-pilots_frame_td_channel = simulate_Rayleigh_channel(pilots_frame_td, path_delay, path_gain_db);
+h = Rayleigh_channel(path_delay, path_gain_db);
+% plot IR
+figure
+title('Impulse response of the channel')
+subplot(211)
+stem(abs(h))
+xlabel('Time')
+ylabel('Singal abs')
+subplot(212)
+stem(rad2deg(angle(h)))
+xlabel('Time')
+ylabel('Singal phase')
+
+info_frame_td_channel = my_convolution(info_frame_td, h);
+pilots_frame_td_channel = my_convolution(pilots_frame_td, h);
 writematrix([real(info_frame_td_channel), imag(info_frame_td_channel)], "info_frame_td_channel.txt", "Delimiter", ",");
 writematrix([real(pilots_frame_td_channel), imag(pilots_frame_td_channel)], "pilots_frame_td_channel.txt", "Delimiter", ",");
 
@@ -61,8 +74,6 @@ writematrix(dec2bin(decoded_message), "decoded_message.txt", "Delimiter", ",");
 %% Metrics calculation (blocks "BER" and "EVM")
 ber_matlab = biterr(message, decoded_message) / (fr_len*log2(M));
 ber_my = evaluate_ber(message, decoded_message, M);
-%evm_evaluator = comm.EVM;
-%evm_comm = evm_evaluator(info_frame, info_frame_fd);
 evm_matlab = lteEVM(info_frame_fd, info_frame);
 evm_my = evaluate_evm(info_frame_fd, info_frame);
 writematrix(["BER_my" "BER_matlab" "EVM_my" "EVM_matlab"; ...
