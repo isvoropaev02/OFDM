@@ -54,5 +54,13 @@ legend()
 end
 
 
-% 30.03.2024.
+% 02.04.2024.
 % output signal plots
+
+
+%% tests
+%simulate_Rayleigh_channel([1; 0; 0; 0; 0; 0], [1 4 10], [0 -15 -30])
+%simulate_Rayleigh_channel([1; 0; 0; 0; 0; 0], [1 2], [-1 -1])
+%simulate_Rayleigh_channel([1; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0; 0], [1 4 10], [0 -15 -30])
+%simulate_Rayleigh_channel([1; 0; 0; 0; 0; 0], [1 4 10], [0 -90 -90])
+

@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-04-01T14:04:00.606Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="jJ_f_ud7JFEFB_SLDBBW" version="24.2.1" type="device">
+<mxfile host="app.diagrams.net" modified="2024-04-08T16:00:40.038Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" etag="-EQgUaFdfiFaiN1Q-Kh7" version="24.2.1" type="device">
   <diagram name="Страница — 1" id="Q2HFuk-CNmRQg0nZWxVH">
     <mxGraphModel dx="1050" dy="565" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -40,11 +40,11 @@
         <mxCell id="ArrmUuo4qOU89jzBVSeP-5" value="&lt;font size=&quot;3&quot;&gt;P/S&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;direction=south;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="460" y="60" width="60" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="ArrmUuo4qOU89jzBVSeP-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ArrmUuo4qOU89jzBVSeP-6" target="ArrmUuo4qOU89jzBVSeP-4" edge="1">
+        <mxCell id="T_KkwJ9nRyH0SJgAtyol-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="ArrmUuo4qOU89jzBVSeP-6" target="ArrmUuo4qOU89jzBVSeP-3">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ArrmUuo4qOU89jzBVSeP-6" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Helvetica&quot;&gt;Pilot signals&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
-          <mxGeometry x="350" y="170" width="100" height="40" as="geometry" />
+          <mxGeometry x="260" y="170" width="100" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ArrmUuo4qOU89jzBVSeP-7" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Helvetica&quot;&gt;Add Cyclic Prefix&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="550" y="70" width="100" height="60" as="geometry" />
@@ -74,7 +74,7 @@
         </mxCell>
         <mxCell id="ArrmUuo4qOU89jzBVSeP-35" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="ArrmUuo4qOU89jzBVSeP-32" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
-            <mxPoint x="698" y="10" as="sourcePoint" />
+            <mxPoint x="698" y="30" as="sourcePoint" />
             <mxPoint x="697" as="targetPoint" />
           </mxGeometry>
         </mxCell>
@@ -92,7 +92,7 @@
         <mxCell id="ArrmUuo4qOU89jzBVSeP-45" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ArrmUuo4qOU89jzBVSeP-41" target="ArrmUuo4qOU89jzBVSeP-44" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ArrmUuo4qOU89jzBVSeP-41" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Helvetica&quot;&gt;Channel&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+        <mxCell id="ArrmUuo4qOU89jzBVSeP-41" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Helvetica&quot;&gt;Channel&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
           <mxGeometry x="710" y="170" width="100" height="40" as="geometry" />
         </mxCell>
         <mxCell id="ArrmUuo4qOU89jzBVSeP-42" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;shape=mxgraph.electrical.radio.aerial_-_antenna_1;" parent="1" vertex="1">
@@ -192,6 +192,12 @@
         </mxCell>
         <mxCell id="FL3bZ-mZVT9EWMBVddr9-3" value="&lt;font style=&quot;font-size: 14px;&quot; face=&quot;Helvetica&quot;&gt;EVM&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="110" y="440" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="3FI4oPRwpbPhZILjAUkI-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.349;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="ArrmUuo4qOU89jzBVSeP-55" target="ArrmUuo4qOU89jzBVSeP-64" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="3FI4oPRwpbPhZILjAUkI-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.642;entryY=0.001;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="ArrmUuo4qOU89jzBVSeP-55" target="ArrmUuo4qOU89jzBVSeP-64" edge="1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
