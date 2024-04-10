@@ -6,9 +6,9 @@
 
 clear all; close all; clc
 %% parameters
-M = 16; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
+M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 64; % the length of OFDM frame
-SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 12; % [dBW] the signal power is normalized to 1 W
 cp_length = fr_len/2; % the size of cyclic prefix
 
 %% message to transmit and recieve (block "Bits stream")

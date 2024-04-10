@@ -28,11 +28,15 @@ plot(SNR_dB, ber_my)
 hold on
 plot(SNR_dB, ber_matlab)
 set(gca, 'YScale', 'log')
+xlabel("SNR, dB")
+ylabel("Uncoded BER")
 
 figure()
 plot(SNR_dB, 20*log10(evm_my))
 hold on
 plot(SNR_dB, 20*log10(evm_matlab))
+xlabel("SNR, dB")
+ylabel("EVM, dB")
 
 
 fileID = fopen('metrics.txt','w');

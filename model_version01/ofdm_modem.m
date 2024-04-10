@@ -1,17 +1,17 @@
 % main performance file
 % result of each block is written into .txt file
 
-% 08.04.2024
-% added Rayleigh channel
+% 10.04.2024
+% added equalizer
 
 clear all; close all; clc
 %% parameters
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 64; % the length of OFDM frame
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
-cp_length = fr_len/2; % the size of cyclic prefix
-path_delay = [1 4 10];
-path_gain_db = [0 -15 -25];
+path_delay = [1 4 10]; % array of signal arriving delays
+path_gain_db = [0 -15 -25]; % average level of arriving signals
+cp_length = max([fr_len/2 path_delay(end)]); % the size of cyclic prefix
 
 %% message to transmit and recieve (block "Bits stream")
 message = randi([0 M-1], fr_len, 1); % decimal information symbols
@@ -64,11 +64,21 @@ figure
 hold on
 plot(real(info_frame_fd), imag(info_frame_fd), "*", 'DisplayName','information frame')
 plot(real(pilots_frame_fd), imag(pilots_frame_fd), "*", 'DisplayName','pilots frame')
+title("Before equalizer")
+xlabel('I')
+ylabel('Q')
+
+%% Equalizer training and using
+info_frame_equalized = use_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd);
+figure
+hold on
+plot(real(info_frame_equalized), imag(info_frame_equalized), "*", 'DisplayName','information frame')
+title("After equalizer")
 xlabel('I')
 ylabel('Q')
 
 %% Decoded message from frame in frequency domain (block "Demodulator")
-decoded_message = decode_frame(info_frame_fd, M); % decoding frame
+decoded_message = decode_frame(info_frame_equalized, M); % decoding frame
 writematrix(dec2bin(decoded_message), "decoded_message.txt", "Delimiter", ",");
 
 %% Metrics calculation (blocks "BER" and "EVM")
