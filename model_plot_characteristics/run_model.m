@@ -15,7 +15,7 @@ message = randi([0 M-1], fr_len, 1); % decimal information symbols
 info_frame = generate_information_frame(message, M); % creating frame
 
 %% Converting to Time domain and adding cyclic prefix (blocks "IFFT" and "Cyclic prefix")
-info_frame_td = add_cyclic_prefix(ifft(info_frame), cp_length);
+info_frame_td = add_cyclic_prefix(ifft(info_frame).*fr_len, cp_length);
 %pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame), cp_length);
 
 %% Add the AWGN (block "AWGN")
@@ -23,7 +23,7 @@ info_frame_td_noise = awgn(complex(info_frame_td), SNR_dB, 'measured');
 %pilots_frame_td_noise = awgn(complex(pilots_frame_td), SNR_dB, 'measured');
 
 %% Removing cyclic prefix and Converting to Frequency domain (blocks "FFT" and "Remove Cyclic prefix")
-info_frame_fd = fft(remove_cyclic_prefix(info_frame_td_noise, cp_length));
+info_frame_fd = fft(remove_cyclic_prefix(info_frame_td_noise, cp_length))./fr_len;
 %pilots_frame_fd = fft(remove_cyclic_prefix(pilots_frame_td_noise, cp_length));
 
 %% Decoded message from frame in frequency domain (block "Demodulator")

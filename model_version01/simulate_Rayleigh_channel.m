@@ -17,6 +17,10 @@ for k=1:L
     h(path_delay(k))=sqrt(path_gain_lin(k)).*temp(k);
 end
 
+if h'*h > 1
+    h = h ./ (h'*h);
+end
+
 
 %% plot IR
 figure
@@ -58,8 +62,8 @@ output_signal = output_signal_full(1:length(input_signal));
 end
 
 
-% 08.04.2024.
-% output signal length updated
+% 14.04.2024.
+% total channel gain is checked to be <= 1
 
 
 %% tests

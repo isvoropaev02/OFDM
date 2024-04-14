@@ -8,7 +8,7 @@ clear all; close all; clc
 %pkg load communications
 
 %% parameters
-rng(5); % random seed setter (for repeating the same results)
+rng(3); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 64; % the length of OFDM frame
@@ -38,18 +38,17 @@ writematrix([real(pilots_frame_td), imag(pilots_frame_td)], "pilots_frame_td.txt
 
 %% Channel
 h = Rayleigh_channel(path_delay, path_gain_db);
-writematrix([real(h), imag(h)], "h.txt", "Delimiter", ",");
 % plot IR
 figure
 title('Impulse response of the channel')
 subplot(211)
 stem(abs(h))
 xlabel('Time')
-ylabel('h(t), abs')
+ylabel('Singal abs')
 subplot(212)
 stem(rad2deg(angle(h)))
 xlabel('Time')
-ylabel('h(t), phase (deg)')
+ylabel('Singal phase')
 
 info_frame_td_channel = my_convolution(info_frame_td, h);
 pilots_frame_td_channel = my_convolution(pilots_frame_td, h);
@@ -82,7 +81,6 @@ ylabel('Q')
 
 %% Equalizer training and using
 info_frame_equalized = use_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd);
-writematrix([real(info_frame_equalized), imag(info_frame_equalized)], "info_frame_equalized.txt", "Delimiter", ",");
 figure
 hold on
 plot(real(info_frame_equalized), imag(info_frame_equalized), "*", 'DisplayName','information frame')
@@ -92,8 +90,8 @@ ylabel('Q')
 
 %% Decoded message from frame in frequency domain (block "Demodulator")
 decoded_message = decode_frame(info_frame_equalized, M); % decoding frame
-writematrix(dec2bin(decoded_message), "decoded_message.txt", "Delimiter", ",");
-%dlmwrite('message.txt',dec2bin(decoded_message, log2(M)),'Delimiter',',');
+%writematrix(dec2bin(decoded_message), "decoded_message.txt", "Delimiter", ",");
+dlmwrite('message.txt',dec2bin(decoded_message, log2(M)),'Delimiter',',');
 
 %% Metrics calculation (blocks "BER" and "EVM")
 ber_matlab = biterr(message, decoded_message) / (fr_len*log2(M));
