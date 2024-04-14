@@ -9,7 +9,7 @@ function frame = generate_information_frame(message, M)
 if M >= 16
     frame = qammod(message, M, UnitAveragePower=true); % PlotConstellation=false works only in matlab
 else
-    frame = pskmod(message, M, pi/M, PlotConstellation=true); % PlotConstellation=false
+    frame = pskmod(message, M, pi/M); % PlotConstellation=false
 end
 end
 

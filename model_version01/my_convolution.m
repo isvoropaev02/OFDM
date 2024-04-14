@@ -6,6 +6,9 @@ function output_signal = my_convolution(input_signal,h)
 % Output:       output_signal : Signal after propagating through channel
 
 output_signal_full = conv(input_signal, h, 'full');
+figure
+plot(real(output_signal_full))
+
 output_signal = output_signal_full(1:length(input_signal));
 end
 
