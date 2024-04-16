@@ -7,7 +7,7 @@ function output_signal = my_convolution(input_signal,h)
 
 output_signal_full = conv(input_signal, h, 'full');
 figure
-plot(real(output_signal_full))
+plot(abs(output_signal_full))
 
 output_signal = output_signal_full(1:length(input_signal));
 end

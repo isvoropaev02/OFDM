@@ -8,13 +8,13 @@ clear all; close all; clc
 %pkg load communications
 
 %% parameters
-rng(5); % random seed setter (for repeating the same results)
+rng(9); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 64; % the length of OFDM frame
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
-path_delay = [1 4 10]; % array of signal arriving delays
-path_gain_db = [0 -5 -10]; % average level of arriving signals
+path_delay = [1 20 25]; % array of signal arriving delays
+path_gain_db = [0 0 -10]; % average level of arriving signals
 cp_length = max([fr_len/2 path_delay(end)]); % the size of cyclic prefix
 
 %% message to transmit and recieve (block "Bits stream")
@@ -35,6 +35,12 @@ disp(1)
 signal_energy(info_frame_td)
 writematrix([real(info_frame_td), imag(info_frame_td)], "info_frame_td.txt", "Delimiter", ",");
 writematrix([real(pilots_frame_td), imag(pilots_frame_td)], "pilots_frame_td.txt", "Delimiter", ",");
+
+figure
+title('Before channel')
+hold on
+plot(real(info_frame_td))
+%plot(imag(info_frame_td))
 
 %% Channel
 h = Rayleigh_channel(path_delay, path_gain_db);
