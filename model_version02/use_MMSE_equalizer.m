@@ -15,7 +15,7 @@ assert(length(initial_pilots) == length(recieved_pilots) && length(frame_fd) == 
 h = recieved_pilots ./ initial_pilots;
 
 % snr estimation
-snr_error_sign =2*(rand([1; 1]) >= 0.5) - 1;
+snr_error_sign =2*(rand([1 1]) >= 0.5) - 1;
 snr = 10^(snr_db/10);
 snr = snr + snr_error_sign*snr*relative_snr_error;
 
