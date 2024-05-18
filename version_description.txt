@@ -1,5 +1,5 @@
 ---verion 0.1.---
-One transmitter and one reciever OFDM system model with Rayleigh channel and simple equalizer.
+One transmitter and one reciever OFDM system model with Rayleigh channel and simple ZF equalizer.
 
 ---verion 0.2.---
 Two equalizers are available - ZF and MMSE. Absolute frequency in band is specified. Guard bands are available.

@@ -11,8 +11,11 @@ function output = use_MMSE_equalizer(frame_fd, initial_pilots, recieved_pilots, 
 
 assert(length(initial_pilots) == length(recieved_pilots) && length(frame_fd) == length(initial_pilots), ...
                 'Length of the pilots sequence is not the same as the length of information sequence.')
+
+used_subcarriers = setdiff((1:1:length(frame_fd)), null_subcarriers);
+
 %channel estimation
-h = recieved_pilots ./ initial_pilots;
+h = recieved_pilots(used_subcarriers) ./ initial_pilots(used_subcarriers);
 
 % snr estimation
 snr_error_sign =2*(rand([1 1]) >= 0.5) - 1;
@@ -20,8 +23,8 @@ snr = 10^(snr_db/10);
 snr = snr + snr_error_sign*snr*relative_snr_error;
 
 % using equalizer
-output = 1 ./ (h + 1./(conj(h).*snr)) .* frame_fd;
+output = frame_fd(used_subcarriers) ./ (h + 1./(conj(h).*snr));
 end
 
-% 28.04.2024.
-% snr relative error available/ still no null synbols removing script
+% 18.05.2024.
+% null subcarriers are removed

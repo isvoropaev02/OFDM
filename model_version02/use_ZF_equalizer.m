@@ -9,9 +9,14 @@ function output = use_ZF_equalizer(frame_fd, initial_pilots, recieved_pilots, nu
 assert(length(initial_pilots) == length(recieved_pilots) && length(frame_fd) == length(initial_pilots), ...
                 'Length of the pilots sequence is not the same as the length of information sequence.')
 
-h = recieved_pilots ./ initial_pilots;
-output = frame_fd ./ h;
+used_subcarriers = setdiff((1:1:length(frame_fd)), null_subcarriers);
+
+% channel estimation
+h = recieved_pilots(used_subcarriers) ./ initial_pilots(used_subcarriers);
+
+% equalization
+output = frame_fd(used_subcarriers) ./ h;
 end
 
-% 10.04.2024.
-% created
+% 18.05.2024.
+% null subcarriers are removed

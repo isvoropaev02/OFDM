@@ -5,16 +5,17 @@ function frame = generate_information_frame(message, M, null_subcarriers)
 
 % Output:       frame : Aray of symbols with the frmae structure
 
+
+frame = zeros(length(message)+length(null_subcarriers),1);
+used_subcarriers = setdiff((1:1:length(message)+length(null_subcarriers)), null_subcarriers);
 %% modulation
 if M >= 16
-    frame = qammod(message, M, UnitAveragePower=true); % PlotConstellation=false works only in matlab
+    frame(used_subcarriers) = qammod(message, M, UnitAveragePower=true); % PlotConstellation=false works only in matlab
 else
-    frame = pskmod(message, M, pi/M); % PlotConstellation=false
+    frame(used_subcarriers) = pskmod(message, M, pi/M); % PlotConstellation=false
 end
 
-frame(null_subcarriers) = 0;
-
 end
 
-% 27.04.24
+% 18.05.24
 % guard bands added

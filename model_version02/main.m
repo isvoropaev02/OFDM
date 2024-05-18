@@ -1,8 +1,8 @@
 % main performance file
 % result of each block is written into .txt file
 
-% 14.04.2024
-% added random seed
+% 18.05.2024
+% time and frequency values are specified
 
 clear all; close all; clc
 %pkg load communications
@@ -11,12 +11,19 @@ clear all; close all; clc
 rng(2); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
-fr_len = 64; % the length of OFDM frame
-SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 1; % [dBW] the signal power is normalized to 1 W
 path_delay = [1 4 15 20]; % array of signal arriving delays
-path_gain_db = [0 -10 -15 -40]; % average level of arriving signals in dB
-cp_length = max([fr_len/2 path_delay(end)]); % the size of cyclic prefix
-guard_bands = [];% пока не делаем [1 2 fr_len-1 fr_len]; % guard band in spectrum
+path_gain_db = [-5 0 -10 -15]; % average level of arriving signals in dB
+
+% values from IEEE 802.11a for 20 MHz band
+Bw = 20*10^6; % Hz -- Bandwidth
+Ts = 3.2*10^(-6); % sec -- duration of the frame (3.2 us)
+delta_f = 1/Ts; % Hz -- band between neighbouring subcarriers (312.5 kHz)
+fr_len = 64; % the length of OFDM frame
+cp_length = max([fr_len/2 path_delay(end)]); % the size of cyclic prefix (1.6 us)
+guard_bands = [1 29 30 31 32 33 34 35 36];% guard band {-32 -31 -30 -29 0 28 29 30 31} subcarriers
+% frequeny_range = linspace(-Bw/2, Bw/2, fr_len);
+% time_range = linspace(0, 3*Ts/2, 3*fr_len/2);
 
 %% message to transmit and recieve (block "Bits stream")
 message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
@@ -28,9 +35,11 @@ info_frame = generate_information_frame(message, M, guard_bands); % creating fra
 % writematrix([real(info_frame), imag(info_frame)], "info_frame.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame), imag(pilots_frame)], "pilots_frame.txt", "Delimiter", ",");
 
-% figure
-% title('Output spectrum')
-% plot(abs(info_frame))
+figure
+title('Before IDFT')
+plot(linspace(-Bw/2, Bw/2-delta_f, fr_len)*10^(-6), fftshift(abs(info_frame)))
+xlabel('Frequency, MHz')
+ylabel('Power spectrum of output signal')
 
 %% Converting to Time domain and adding cyclic prefix (blocks "IFFT" and "Cyclic prefix")
 info_frame_td = add_cyclic_prefix(ifft(info_frame).*fr_len, cp_length);
@@ -38,13 +47,19 @@ pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame).*fr_len, cp_length);
 % writematrix([real(info_frame_td), imag(info_frame_td)], "info_frame_td.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame_td), imag(pilots_frame_td)], "pilots_frame_td.txt", "Delimiter", ",");
 
-fprintf('Energy_Tx = %f\n', signal_energy(info_frame_td));
+fprintf('Power_Tx = %f\n', signal_power(info_frame_td));
 
 % figure
 % title('Before channel')
 % hold on
 % plot(real(info_frame_td))
 % plot(imag(info_frame_td))
+
+figure
+title('Spectrum in Tx output')
+plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(ifft(info_frame), 1024))))
+xlabel('Frequency, MHz')
+ylabel('Power spectrum of output signal')
 
 %% Channel
 h = Rayleigh_channel(path_delay, path_gain_db);
@@ -66,7 +81,7 @@ pilots_frame_td_channel = my_convolution(pilots_frame_td, h);
 % writematrix([real(info_frame_td_channel), imag(info_frame_td_channel)], "info_frame_td_channel.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame_td_channel), imag(pilots_frame_td_channel)], "pilots_frame_td_channel.txt", "Delimiter", ",");
 
-fprintf('Energy_Channel = %f\n', signal_energy(info_frame_td_channel));
+fprintf('Power_Channel = %f\n', signal_power(info_frame_td_channel));
 
 %% Add the AWGN (block "AWGN")
 info_frame_td_noise = awgn(complex(info_frame_td_channel), SNR_dB, 'measured');
@@ -74,7 +89,7 @@ pilots_frame_td_noise = awgn(complex(pilots_frame_td_channel), SNR_dB, 'measured
 % writematrix([real(info_frame_td_noise), imag(info_frame_td_noise)], "info_frame_td_noise.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame_td_noise), imag(pilots_frame_td_noise)], "pilots_frame_td_noise.txt", "Delimiter", ",");
 
-fprintf('Energy_Rx = %f\n', signal_energy(info_frame_td_noise));
+fprintf('Power_Rx = %f\n', signal_power(info_frame_td_noise));
 
 %% Removing cyclic prefix and Converting to Frequency domain (blocks "FFT" and "Remove Cyclic prefix")
 info_frame_fd = fft(remove_cyclic_prefix(info_frame_td_noise, cp_length))./fr_len;
@@ -113,8 +128,8 @@ decoded_message_MMSE = decode_frame(info_frame_equalized_MMSE, M);
 %% Metrics calculation (blocks "BER" and "EVM")
 ber_ZF = evaluate_ber(message, decoded_message_ZF, M);
 ber_MMSE = evaluate_ber(message, decoded_message_MMSE, M);
-evm_ZF = evaluate_evm(info_frame_equalized_ZF, info_frame);
-evm_MMSE = evaluate_evm(info_frame_equalized_MMSE, info_frame);
+evm_ZF = evaluate_evm(info_frame_equalized_ZF, info_frame, guard_bands);
+evm_MMSE = evaluate_evm(info_frame_equalized_MMSE, info_frame, guard_bands);
 
 fileID = fopen('metrics.txt','w');
 fprintf(fileID,'%s\t%s\t%s\t%s\n', "BER_ZF", "BER_MMSE", "EVM_ZF", "EVM_MMSE");
