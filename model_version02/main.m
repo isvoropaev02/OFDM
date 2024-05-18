@@ -36,6 +36,7 @@ info_frame = generate_information_frame(message, M, guard_bands); % creating fra
 % writematrix([real(pilots_frame), imag(pilots_frame)], "pilots_frame.txt", "Delimiter", ",");
 
 figure
+hold on
 title('Before IDFT')
 plot(linspace(-Bw/2, Bw/2-delta_f, fr_len)*10^(-6), fftshift(abs(info_frame)))
 xlabel('Frequency, MHz')
@@ -49,15 +50,18 @@ pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame).*fr_len, cp_length);
 
 fprintf('Power_Tx = %f\n', signal_power(info_frame_td));
 
-% figure
-% title('Before channel')
-% hold on
-% plot(real(info_frame_td))
-% plot(imag(info_frame_td))
-
 figure
+hold on
 title('Spectrum in Tx output')
 plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(ifft(info_frame), 1024))))
+xlabel('Frequency, MHz')
+ylabel('Power spectrum of output signal')
+
+
+figure
+hold on
+title('Spectrum in Tx output with prefix')
+plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(info_frame_td/96, 1024))))
 xlabel('Frequency, MHz')
 ylabel('Power spectrum of output signal')
 
@@ -66,6 +70,7 @@ h = Rayleigh_channel(path_delay, path_gain_db);
 % writematrix([real(h), imag(h)], "h.txt", "Delimiter", ",");
 % plot IR
 figure
+hold on
 title('Impulse response of the channel')
 subplot(211)
 stem(abs(h))

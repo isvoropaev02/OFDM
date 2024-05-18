@@ -10,7 +10,7 @@ function [ber_ZF, evm_ZF, ber_MMSE, evm_MMSE] = run_model(M, fr_len, SNR_dB, cha
 % Output:       ber and evm for 2 different equalizers
 
 %% message to transmit and recieve (block "Bits stream")
-message = randi([0 M-1], fr_len, 1); % decimal information symbols
+message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
 
 %% Frame in frequency domain (blocks "Modulator" and "Pilot signals")
 pilots_frame = generate_pilots_frame(fr_len, guard_bands);

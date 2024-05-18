@@ -2,9 +2,9 @@ clear all; close all; clc
 %pkg load communications
 
 %% parameters
-rng(2);
+rng(1);
 
-M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
+M = 16; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 fr_len = 2048; % the length of OFDM frame
 path_delay = [1 4 15 20]; % array of signal arriving delays
 path_gain_db = [0 -10 -15 -40]; % average level of arriving signals in dB
