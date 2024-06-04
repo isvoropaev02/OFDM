@@ -11,7 +11,7 @@ clear all; close all; clc
 rng(2); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
-SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 1; % [dBW] the signal power is normalized to 1 W
 path_delay = [1 4 15 20]; % array of signal arriving delays
 path_gain_db = [-5 0 -10 -15]; % average level of arriving signals in dB
 
@@ -35,7 +35,7 @@ info_frame = generate_information_frame(message, M, guard_bands); % creating fra
 % writematrix([real(info_frame), imag(info_frame)], "info_frame.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame), imag(pilots_frame)], "pilots_frame.txt", "Delimiter", ",");
 
-figure(1)
+figure
 hold on
 title('Before IDFT')
 plot(linspace(-Bw/2, Bw/2-delta_f, fr_len)*10^(-6), fftshift(abs(info_frame)))
@@ -50,7 +50,7 @@ pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame).*fr_len, cp_length);
 
 fprintf('Power_Tx = %f\n', signal_power(info_frame_td));
 
-figure(2)
+figure
 hold on
 title('Spectrum in Tx output')
 plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(ifft(info_frame), 1024))))
@@ -58,25 +58,21 @@ xlabel('Frequency, MHz')
 ylabel('Power spectrum of output signal')
 
 
-figure(3)
+figure
 hold on
-title('Spectrum in Tx output with prefix (pwelch)')
-%plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(info_frame_td/fr_len, 1024))))
-[psd,freq1] = pwelch(info_frame_td,16,8,64, Bw);
-%[psd, freq1] = pwelch(info_frame_td);
-plot((freq1)*10^(-6)-10, fftshift(psd))
+title('Spectrum in Tx output with prefix')
+plot(linspace(-Bw/2, Bw/2-delta_f, 1024)*10^(-6), fftshift(abs(fft(info_frame_td/96, 1024))))
 xlabel('Frequency, MHz')
-ylabel('Power spectral density of output signal')
+ylabel('Power spectrum of output signal')
 
 %% Channel
 h = Rayleigh_channel(path_delay, path_gain_db);
-%h = [0; 0; 1; 0; 0; -1; 0; 0];
 % writematrix([real(h), imag(h)], "h.txt", "Delimiter", ",");
 % plot IR
-figure(4)
-title('Impulse response of the channel')
+figure
 hold on
 subplot(211)
+title('Impulse response of the channel')
 stem(abs(h))
 xlabel('Time')
 ylabel('h(t), abs')
@@ -106,7 +102,7 @@ pilots_frame_fd = fft(remove_cyclic_prefix(pilots_frame_td_noise, cp_length))./f
 % writematrix([real(info_frame_fd), imag(info_frame_fd)], "info_frame_fd.txt", "Delimiter", ",");
 % writematrix([real(pilots_frame_fd), imag(pilots_frame_fd)], "pilots_frame_fd.txt", "Delimiter", ",");
 
-figure(5)
+figure
 hold on
 plot(real(info_frame_fd), imag(info_frame_fd), "*", 'DisplayName','information frame', 'Color', 'black')
 plot(real(pilots_frame_fd), imag(pilots_frame_fd), "*", 'DisplayName','pilots frame', 'Color', 'green')
@@ -120,7 +116,7 @@ info_frame_equalized_ZF = use_ZF_equalizer(info_frame_fd, pilots_frame, pilots_f
 info_frame_equalized_MMSE = use_MMSE_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands, SNR_dB, 0);
 % writematrix([real(info_frame_equalized_ZF), imag(info_frame_equalized_ZF)], "info_frame_equalized_ZF.txt", "Delimiter", ",");
 % writematrix([real(info_frame_equalized_MMSE), imag(info_frame_equalized_MMSE)], "info_frame_equalized_MMSE.txt", "Delimiter", ",");
-figure(6)
+figure
 hold on
 plot(real(info_frame_equalized_ZF), imag(info_frame_equalized_ZF), "*", 'DisplayName','Zero-Forcing')
 plot(real(info_frame_equalized_MMSE), imag(info_frame_equalized_MMSE), "*", 'DisplayName','MMSE')

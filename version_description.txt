@@ -3,3 +3,6 @@ One transmitter and one reciever OFDM system model with Rayleigh channel and sim
 
 ---verion 0.2.---
 Two equalizers are available - ZF and MMSE. Absolute frequency in band is specified. Guard bands are available.
+
+---verion 0.3.---
+MIMO 1x2 is available in a spatial diversity mode.
