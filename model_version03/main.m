@@ -68,11 +68,6 @@ stem(delta_t*(0:1:path_delay_21(end)-1)*1e9,rad2deg(angle(h21)))
 xlabel('Time [ns]')
 ylabel('h(t), phase (deg)')
 
-
-% info_frame_td_channel_11 = my_convolution(info_frame_td, h11);
-% info_frame_td_channel_21 = my_convolution(info_frame_td, h21);
-% pilots_frame_td_channel_11 = my_convolution(pilots_frame_td, h11);
-% pilots_frame_td_channel_21 = my_convolution(pilots_frame_td, h21);
 info_frame_td_channel = [my_convolution(info_frame_td, h11) my_convolution(info_frame_td, h21)];
 pilots_frame_td_channel = [my_convolution(pilots_frame_td, h11) my_convolution(pilots_frame_td, h21)];
 

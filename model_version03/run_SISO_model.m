@@ -1,5 +1,5 @@
 function [ber_ZF, evm_ZF, ber_MMSE, evm_MMSE] = run_SISO_model(M, fr_len, SNR_dB, path_delay, path_gain_db, cp_length, guard_bands)
-% runs model with given parameters
+% runs SISO model with given parameters
 % Inputs:       M           : Modulator order
 %               fr_len      : Length of the frame
 %               SNR_db      : SNR in dB on the reciever

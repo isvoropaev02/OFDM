@@ -1,4 +1,6 @@
 clear all; close all;
+% estimation of PSD of single transmitter output OFDM signal
+% 06.06.2024.
 
 num_of_frames = 100;
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
