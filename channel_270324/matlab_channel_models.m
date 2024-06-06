@@ -12,14 +12,23 @@ tgn = wlanTGnChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayP
 
 
 %% look at IR 
-x = zeros([64, 1]);
+x = zeros([32, 1]);
 x(1) = 1;
 
 y = tgn(x);
+release(tgn);
+info(tgn)
+
 
 figure(1)
 hold on
-stem(abs(y))
-stem(angle(y))
-info(tgn)
+subplot(211)
+stem((0:1:31)./Bw*1e9,abs(y))
+xlabel('Time [ns]')
+ylabel('h(t), abs')
 title('IEEE 802.11n multipath fading channel')
+subplot(212)
+stem(rad2deg(angle(y)))
+xlabel('Time')
+ylabel('h(t), phase (deg)')
+

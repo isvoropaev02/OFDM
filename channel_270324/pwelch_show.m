@@ -31,7 +31,7 @@ size(QPSK);
 QPSK2 = interpft(QPSK, ll);
 size(QPSK2);
 
-f = 0.5; % -1<f<1
+f = -0.5; % -1<f<1
 
 % frequency upconversion
 %QPSK2 = QPSK2.*exp(8*(interpol/Ls)*1i*ii');
@@ -44,7 +44,7 @@ plot(abs(fft(QPSK2, 8*length(QPSK2))))%, return
 title("abs fft")
 
 figure(2)
-size(xcorr(QPSK2));
+size(xcorr(QPSK2))
 plot( abs( fft( xcorr(QPSK2), 4*length(QPSK2) ) ) )
 title("abs fft xcorr")
 
@@ -56,7 +56,7 @@ title("abs fft xcorr")
 
 figure(3)
 plot(FREQ, SPECTRA)
-title("pwelch"), return
+title("pwelch")%, return
 
 
 %pwelch =======

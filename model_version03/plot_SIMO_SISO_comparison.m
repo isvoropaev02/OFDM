@@ -10,22 +10,7 @@ path_delay = [1 4 15 20]; % array of signal arriving delays
 path_gain_db = [0 -10 -15 -40]; % average level of arriving signals in dB
 cp_length = max([fr_len/2 path_delay(end)]); % the size of cyclic prefix
 guard_bands = [];% пока не делаем [1 2 fr_len-1 fr_len]; % guard band in spectrum
-
 SNR_dB = (1:0.5:25)'; % [dBW] the signal power is normalized to 1 W
-
-%% generate channel
-h = Rayleigh_channel(path_delay, path_gain_db);
-figure
-title('Impulse response of the channel')
-subplot(211)
-stem(abs(h))
-xlabel('Time')
-ylabel('h(t), abs')
-subplot(212)
-stem(rad2deg(angle(h)))
-xlabel('Time')
-ylabel('h(t), phase (deg)')
-
 
 %% creating arrays of results
 ber_ZF = zeros(length(SNR_dB), 1);

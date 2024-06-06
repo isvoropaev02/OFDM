@@ -6,17 +6,22 @@ function output = use_ZF_equalizer(frame_fd, initial_pilots, recieved_pilots, nu
 
 % Output:       output_signal : Signal after ZF equalization
 
-assert(length(initial_pilots) == length(recieved_pilots) && length(frame_fd) == length(initial_pilots), ...
-                'Length of the pilots sequence is not the same as the length of information sequence.')
+assert(size(initial_pilots, 1) == size(recieved_pilots, 1) && size(frame_fd, 1) == size(initial_pilots, 1), ...
+                'size of the pilots sequence is not the same as the size of information sequence.')
 
-used_subcarriers = setdiff((1:1:length(frame_fd)), null_subcarriers);
+used_subcarriers = setdiff((1:1:size(frame_fd)), null_subcarriers);
 
-% channel estimation
-h = recieved_pilots(used_subcarriers) ./ initial_pilots(used_subcarriers);
 
 % equalization
-output = frame_fd(used_subcarriers) ./ h;
+idx = 1;
+output = zeros([length(used_subcarriers), 1]);
+for k=used_subcarriers
+    y = reshape(frame_fd(k,:), [length(frame_fd(k,:)), 1]);
+    % channel estimation
+    H = reshape(recieved_pilots(k,:)./initial_pilots(k,:), [length(frame_fd(k,:)), 1]);
+    output(idx) = 1/(H'*H).*H'*y;
+    idx = idx + 1;
 end
 
-% 18.05.2024.
-% null subcarriers are removed
+% 06.06.2024.
+% 1x2 SIMO equalizer

@@ -1,4 +1,4 @@
-function [ber_ZF, evm_ZF, ber_MMSE, evm_MMSE] = run_model(M, fr_len, SNR_dB, channel_h, cp_length, guard_bands)
+function [ber_ZF, evm_ZF, ber_MMSE, evm_MMSE] = run_SISO_model(M, fr_len, SNR_dB, path_delay, path_gain_db, cp_length, guard_bands)
 % runs model with given parameters
 % Inputs:       M           : Modulator order
 %               fr_len      : Length of the frame
@@ -21,6 +21,7 @@ info_frame_td = add_cyclic_prefix(ifft(info_frame).*fr_len, cp_length);
 pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame).*fr_len, cp_length);
 
 %% Channel
+channel_h = Rayleigh_channel(path_delay, path_gain_db);
 info_frame_td_channel = my_convolution(info_frame_td, channel_h);
 pilots_frame_td_channel = my_convolution(pilots_frame_td, channel_h);
 
