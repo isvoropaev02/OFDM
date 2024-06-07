@@ -51,6 +51,8 @@ fprintf('Power_Tx = %f\n', signal_power(info_frame_td));
 %% Channel
 h11 = Rayleigh_channel(path_delay_11, path_gain_db_11);
 h21 = Rayleigh_channel(path_delay_21, path_gain_db_21);
+writematrix([real(h11), imag(h11)], "h11.txt", "Delimiter", ",");
+writematrix([real(h21), imag(h21)], "h21.txt", "Delimiter", ",");
 % plot IR
 figure(2)
 subplot(211)

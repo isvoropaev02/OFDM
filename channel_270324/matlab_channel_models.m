@@ -1,24 +1,17 @@
-Bw = 20*10^6; % Hz -- Bandwidth
+clear all
+Bw = 20*1e6; % Hz -- Bandwidth
 time_sample_rate = Bw;
 carrier_freq = 2.4*1e9;
-
-
-% IEEE 802.11n multipath fading channel
-tgn = wlanTGnChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayProfile', 'Model-B', ...
-    'EnvironmentalSpeed', 0, 'FluorescentEffect', false);
-
-% IEEE 802.11ac multipath fading channel
-
-
-
-%% look at IR 
 x = zeros([32, 1]);
 x(1) = 1;
 
-y = tgn(x);
+%% IEEE 802.11n multipath fading channel
+tgn = wlanTGnChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayProfile', 'Model-B', ...
+    'EnvironmentalSpeed', 0, 'PathGainsOutputPort',true);
+
+[y, pg_n] = tgn(x);
 release(tgn);
 info(tgn)
-
 
 figure(1)
 hold on
@@ -32,3 +25,16 @@ stem(rad2deg(angle(y)))
 xlabel('Time')
 ylabel('h(t), phase (deg)')
 
+%% IEEE 802.11ac multipath fading channel
+tgac = wlanTGacChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayProfile', 'Model-B', ...
+    'EnvironmentalSpeed', 0, 'PathGainsOutputPort',true);
+[y, pg_ac] = tgac(x);
+release(tgac);
+info(tgac)
+
+%% IEEE 802.11ah multipath fading channel
+tgah = wlanTGahChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayProfile', 'Model-B', ...
+    'EnvironmentalSpeed', 0, 'PathGainsOutputPort',true);
+[y, pg_ah] = tgah(x);
+release(tgah);
+info(tgah)
