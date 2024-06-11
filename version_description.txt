@@ -5,4 +5,7 @@ One transmitter and one reciever OFDM system model with Rayleigh channel and sim
 Two equalizers are available - ZF and MMSE. Absolute frequency in band is specified. Guard bands are available.
 
 ---verion 0.3.---
-MIMO 1x2 is available in a spatial diversity mode. Comparison of SISO and 1x2 SIMO system. PSD estimation of output Tx signal.
+SIMO 1x2 is available in a spatial diversity mode. Comparison of SISO and 1x2 SIMO system. PSD estimation of output Tx signal.
+
+---verion 0.4.---
+SIMO 1xNr is available in a spatial diversity mode.

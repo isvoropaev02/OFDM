@@ -1,5 +1,6 @@
 clear all
 Bw = 20*1e6; % Hz -- Bandwidth
+delta_t = 1/Bw;
 time_sample_rate = Bw;
 carrier_freq = 2.4*1e9;
 x = zeros([32, 1]);
@@ -38,3 +39,16 @@ tgah = wlanTGahChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'Dela
 [y, pg_ah] = tgah(x);
 release(tgah);
 info(tgah)
+
+%% IEEE 802.11ax multipath fading channel
+tgax = wlanTGaxChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq, 'DelayProfile', 'Model-B', ...
+    'EnvironmentalSpeed', 0, 'PathGainsOutputPort',true);
+[y, pg_ax] = tgax(x);
+release(tgax);
+info(tgax)
+
+%% IEEE 802.11ay multipath fading channel
+tgay = wlanTGayChannel('SampleRate', Bw, 'CarrierFrequency', carrier_freq);
+[y, pg_ay] = tgay(x);
+release(tgay);
+info(tgay)

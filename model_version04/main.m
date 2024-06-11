@@ -1,8 +1,8 @@
 % main performance file
 % result of each block is written into .txt file
 
-% 06.06.2024
-% time and frequency values are specified
+%11.06.2024
+% nuber of Rx antennas can be arbitrary
 
 clear all; close all; clc
 %pkg load communications
@@ -12,10 +12,9 @@ rng(5); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
-path_delay_11 = [1 3 4 5]; % array of signal arriving delays
-path_gain_db_11 = [0 -6 -10 -15]; % average level of arriving signals in dB
-path_delay_21 = [1 2 4 6];
-path_gain_db_21 = [-2 -4 -14 -17];
+path_delay = [1 3 4 5 6]; % array of signal arriving delays
+path_gain_db = [0 -6 -10 -15 -12]; % average level of arriving signals in dB
+Nr = 2; % number of recieve antennas
 
 % values from IEEE 802.11a for 20 MHz band
 Bw = 20*10^6; % Hz -- Bandwidth
@@ -25,8 +24,6 @@ Ts = 1/delta_f; % sec -- duration of the frame (3.2 us)
 delta_t = 1/Bw; % sec -- time interval between signal samples 
 cp_length = max([fr_len/2 path_delay_11(end) path_delay_21(end)]); % the size of cyclic prefix (1.6 us)
 guard_bands = [1 29 30 31 32 33 34 35 36];% guard band {-32 -31 -30 -29 0 28 29 30 31} subcarriers
-% frequeny_range = linspace(-Bw/2, Bw/2, fr_len);
-% time_range = linspace(0, 3*Ts/2, 3*fr_len/2);
 
 %% message to transmit and recieve (block "Bits stream")
 message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
@@ -34,13 +31,6 @@ message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information s
 %% Frame in frequency domain (blocks "Modulator" and "Pilot signals")
 pilots_frame = generate_pilots_frame(fr_len, guard_bands);
 info_frame = generate_information_frame(message, M, guard_bands); % creating frame
-
-figure(1)
-hold on
-title('Before IDFT')
-plot(linspace(-Bw/2, Bw/2-delta_f, fr_len)*10^(-6), fftshift(abs(info_frame)))
-xlabel('Frequency, MHz')
-ylabel('Power spectrum of output signal')
 
 %% Converting to Time domain and adding cyclic prefix (blocks "IFFT" and "Cyclic prefix")
 info_frame_td = add_cyclic_prefix(ifft(info_frame).*fr_len, cp_length);
@@ -54,7 +44,7 @@ h21 = Rayleigh_channel(path_delay_21, path_gain_db_21);
 writematrix([real(h11), imag(h11)], "h11.txt", "Delimiter", ",");
 writematrix([real(h21), imag(h21)], "h21.txt", "Delimiter", ",");
 % plot IR
-figure(2)
+figure()
 subplot(211)
 stem(delta_t*(0:1:path_delay_11(end)-1)*1e9,abs(h11), 'DisplayName', 'h11')
 hold on
@@ -85,7 +75,7 @@ fprintf('Power_Rx = %f\n', signal_power(info_frame_td_noise(:,1)) + signal_power
 info_frame_fd = [fft(remove_cyclic_prefix(info_frame_td_noise(:,1), cp_length))./fr_len fft(remove_cyclic_prefix(info_frame_td_noise(:,2), cp_length))./fr_len];
 pilots_frame_fd = [fft(remove_cyclic_prefix(pilots_frame_td_noise(:,1), cp_length))./fr_len fft(remove_cyclic_prefix(pilots_frame_td_noise(:,2), cp_length))./fr_len];
 
-figure
+figure()
 plot(real(reshape(info_frame_fd, [], 1)), imag(reshape(info_frame_fd, [], 1)), "*", 'DisplayName','information frame', 'Color', 'black')
 hold on
 plot(real(reshape(pilots_frame_fd, [], 1)), imag(reshape(pilots_frame_fd, [], 1)), "*", 'DisplayName','pilots frame', 'Color', 'green')
@@ -98,7 +88,7 @@ title("Before equalizer")
 info_frame_equalized_ZF = use_ZF_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands);
 info_frame_equalized_MMSE = use_MMSE_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands, SNR_dB, 0);
 
-figure
+figure()
 hold on
 plot(real(info_frame_equalized_ZF), imag(info_frame_equalized_ZF), "*", 'DisplayName','Zero-Forcing')
 plot(real(info_frame_equalized_MMSE), imag(info_frame_equalized_MMSE), "*", 'DisplayName','MMSE')
