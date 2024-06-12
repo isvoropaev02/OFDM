@@ -1,4 +1,4 @@
-function output = use_MMSE_equalizer(frame_fd, initial_pilots, recieved_pilots, null_subcarriers, snr_db, relative_snr_error)
+function output = use_MMSE_equalizer(frame_fd, initial_pilots_full, recieved_pilots, null_subcarriers,snr_db, relative_snr_error)
 % 1D MMSE equalizer x = 1/(h+1/(h'*SNR))*y
 % Inputs:       frame_fd        : Information frame in frequency domain
 %               initial_pilots  : pilot symbols which are generated in transmitter
@@ -9,26 +9,24 @@ function output = use_MMSE_equalizer(frame_fd, initial_pilots, recieved_pilots, 
 
 % Output:       output_signal : Signal after MMSE equalization
 
-assert(size(initial_pilots, 1) == size(recieved_pilots, 1) && size(frame_fd, 1) == size(initial_pilots, 1), ...
-                'size of the pilots sequence is not the same as the size of information sequence.')
-
-used_subcarriers = setdiff((1:1:size(frame_fd)), null_subcarriers);
-
 % snr estimation
 snr_error_sign =2*(rand([1 1]) >= 0.5) - 1;
 snr = 10^(snr_db/10);
 snr = snr + snr_error_sign*snr*relative_snr_error;
 
-% using equalizer
-idx = 1;
-output = zeros([length(used_subcarriers), 1]);
-for k=used_subcarriers
-    y = reshape(frame_fd(k,:), [length(frame_fd(k,:)), 1]);
+used_subcarriers = setdiff((1:1:size(initial_pilots_full,1)), null_subcarriers);
+initial_pilots = initial_pilots_full(used_subcarriers,:,:);
+
+Nr = size(frame_fd,2);
+Nt = size(initial_pilots_full,3);
+% equalization
+output = zeros([size(frame_fd,1),size(initial_pilots,3)]);
+for k=1:size(frame_fd,1)
+    y = reshape(squeeze(frame_fd(k,:)),[],1);
     % channel estimation
-    H = reshape(recieved_pilots(k,:)./initial_pilots(k,:), [length(frame_fd(k,:)), 1]);
-    output(idx) = 1/(H'*H+1/snr).*H'*y;
-    idx = idx + 1;
+    H = squeeze(recieved_pilots(k,:,:))*squeeze(initial_pilots(k,:,:));
+    output(k, :) = (H'*H+(Nr/snr).*diag(ones([Nt,1])))\(H'*y);
 end
 
-% 06.06.2024.
-% 1x2 mimo equalization
+% 12.06.2024.
+% mimo equalization

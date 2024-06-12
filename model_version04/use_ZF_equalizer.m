@@ -1,4 +1,4 @@
-function output = use_ZF_equalizer(frame_fd, initial_pilots, recieved_pilots, null_subcarriers)
+function output = use_ZF_equalizer(frame_fd, initial_pilots_full, recieved_pilots,null_subcarriers)
 % simple equalizer y=hx then h=y/x
 % Inputs:       frame_fd        : Information frame in frequency domain
 %               initial_pilots  : pilot symbols which are generated in transmitter
@@ -6,22 +6,17 @@ function output = use_ZF_equalizer(frame_fd, initial_pilots, recieved_pilots, nu
 
 % Output:       output_signal : Signal after ZF equalization
 
-assert(size(initial_pilots, 1) == size(recieved_pilots, 1) && size(frame_fd, 1) == size(initial_pilots, 1), ...
-                'size of the pilots sequence is not the same as the size of information sequence.')
-
-used_subcarriers = setdiff((1:1:size(frame_fd)), null_subcarriers);
-
+used_subcarriers = setdiff((1:1:size(initial_pilots_full,1)), null_subcarriers);
+initial_pilots = initial_pilots_full(used_subcarriers,:,:);
 
 % equalization
-idx = 1;
-output = zeros([length(used_subcarriers), 1]);
-for k=used_subcarriers
-    y = reshape(frame_fd(k,:), [length(frame_fd(k,:)), 1]);
+output = zeros([size(frame_fd,1),size(initial_pilots,3)]);
+for k=1:size(frame_fd,1)
+    y = reshape(squeeze(frame_fd(k,:)),[],1);
     % channel estimation
-    H = reshape(recieved_pilots(k,:)./initial_pilots(k,:), [length(frame_fd(k,:)), 1]);
-    output(idx) = 1/(H'*H).*H'*y;
-    idx = idx + 1;
+    H = squeeze(recieved_pilots(k,:,:))*squeeze(initial_pilots(k,:,:));
+    output(k, :) = (H'*H)\(H'*y);
 end
 
-% 06.06.2024.
-% 1x2 SIMO equalizer
+% 12.06.2024.
+% MIMO equalizer
