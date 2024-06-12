@@ -15,6 +15,7 @@ SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
 path_delay = [1 3 4 5 6]; % array of signal arriving delays
 path_gain_db = [0 -6 -10 -15 -12]; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
+Nt = 2; % number of transmitt antennas
 
 % values from IEEE 802.11a for 20 MHz band
 Bw = 20*10^6; % Hz -- Bandwidth
@@ -22,56 +23,49 @@ fr_len = 64; % the length of OFDM frame
 delta_f = Bw/fr_len; % Hz -- band between neighbouring subcarriers (312.5 kHz)
 Ts = 1/delta_f; % sec -- duration of the frame (3.2 us)
 delta_t = 1/Bw; % sec -- time interval between signal samples 
-cp_length = max([fr_len/2 path_delay_11(end) path_delay_21(end)]); % the size of cyclic prefix (1.6 us)
+cp_length = fr_len/2; % the size of cyclic prefix (1.6 us)
 guard_bands = [1 29 30 31 32 33 34 35 36];% guard band {-32 -31 -30 -29 0 28 29 30 31} subcarriers
 
-%% message to transmit and recieve (block "Bits stream")
-message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
-
-%% Frame in frequency domain (blocks "Modulator" and "Pilot signals")
-pilots_frame = generate_pilots_frame(fr_len, guard_bands);
-info_frame = generate_information_frame(message, M, guard_bands); % creating frame
-
-%% Converting to Time domain and adding cyclic prefix (blocks "IFFT" and "Cyclic prefix")
-info_frame_td = add_cyclic_prefix(ifft(info_frame).*fr_len, cp_length);
-pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame).*fr_len, cp_length);
-
-fprintf('Power_Tx = %f\n', signal_power(info_frame_td));
+%% Tx signals
+[info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, cp_length, guard_bands);
+[pilots_frame_td, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, cp_length, guard_bands);
+fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 
 %% Channel
-h11 = Rayleigh_channel(path_delay_11, path_gain_db_11);
-h21 = Rayleigh_channel(path_delay_21, path_gain_db_21);
-writematrix([real(h11), imag(h11)], "h11.txt", "Delimiter", ",");
-writematrix([real(h21), imag(h21)], "h21.txt", "Delimiter", ",");
+h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
 % plot IR
 figure()
 subplot(211)
-stem(delta_t*(0:1:path_delay_11(end)-1)*1e9,abs(h11), 'DisplayName', 'h11')
+stem(delta_t*(0:1:path_delay(end)-1)*1e9,abs(h_full(:,1,1)), 'DisplayName', 'h11')
 hold on
-stem(delta_t*(0:1:path_delay_21(end)-1)*1e9,abs(h21), 'DisplayName', 'h21')
+stem(delta_t*(0:1:path_delay(end)-1)*1e9,abs(h_full(:,Nr, Nt)), 'DisplayName', 'h22')
 xlabel('Time [ns]')
 ylabel('h(t), abs')
 legend()
 title('Impulse response of the channel')
 subplot(212)
-stem(delta_t*(0:1:path_delay_11(end)-1)*1e9,rad2deg(angle(h11)))
+stem(delta_t*(0:1:path_delay(end)-1)*1e9,rad2deg(angle(h_full(:,1,1))))
 hold on
-stem(delta_t*(0:1:path_delay_21(end)-1)*1e9,rad2deg(angle(h21)))
+stem(delta_t*(0:1:path_delay(end)-1)*1e9,rad2deg(angle(h_full(:,Nr, Nt))))
 xlabel('Time [ns]')
 ylabel('h(t), phase (deg)')
 
-info_frame_td_channel = [my_convolution(info_frame_td, h11) my_convolution(info_frame_td, h21)];
-pilots_frame_td_channel = [my_convolution(pilots_frame_td, h11) my_convolution(pilots_frame_td, h21)];
+info_frame_td_channel = MIMO_convolution(info_frame_td,h_full);
+pilots_frame_td_channel = zeros(size(pilots_frame_td,1),size(h_full,2),size(pilots_frame_td,3));
+for id_t = 1:(size(pilots_frame_td,3))
+    pilots_frame_td_channel(:,:,id_t) = MIMO_convolution(pilots_frame_td,h_full);
+end
+fprintf('Power_Channel = %f\n', MIMO_signal_power(info_frame_td_channel));
 
-fprintf('Power_Channel = %f\n', signal_power(info_frame_td_channel(:,1))+signal_power(info_frame_td_channel(:,2)));
+%% AWGN
+info_frame_td_noise = MIMO_AWGN(info_frame_td_channel, SNR_dB);
+pilots_frame_td_noise = zeros(size(pilots_frame_td_channel));
+for id_r = 1:(size(pilots_frame_td_channel,3))
+    pilots_frame_td_noise(:,:,id_t) = MIMO_AWGN(pilots_frame_td_channel(:,:,id_r), SNR_dB);
+end
+fprintf('Power_Rx = %f\n', MIMO_signal_power(info_frame_td_noise));
 
-%% Add the AWGN (block "AWGN")
-info_frame_td_noise = [awgn(complex(info_frame_td_channel(:,1)), SNR_dB, 'measured') awgn(complex(info_frame_td_channel(:,2)), SNR_dB, 'measured')];
-pilots_frame_td_noise = [awgn(complex(pilots_frame_td_channel(:,1)), SNR_dB, 'measured') awgn(complex(pilots_frame_td_channel(:,2)), SNR_dB, 'measured')];
-
-fprintf('Power_Rx = %f\n', signal_power(info_frame_td_noise(:,1)) + signal_power(info_frame_td_noise(:,2)));
-
-%% Removing cyclic prefix and Converting to Frequency domain (blocks "FFT" and "Remove Cyclic prefix")
+%% Rx signals
 info_frame_fd = [fft(remove_cyclic_prefix(info_frame_td_noise(:,1), cp_length))./fr_len fft(remove_cyclic_prefix(info_frame_td_noise(:,2), cp_length))./fr_len];
 pilots_frame_fd = [fft(remove_cyclic_prefix(pilots_frame_td_noise(:,1), cp_length))./fr_len fft(remove_cyclic_prefix(pilots_frame_td_noise(:,2), cp_length))./fr_len];
 
@@ -84,7 +78,7 @@ xlabel('I')
 ylabel('Q')
 title("Before equalizer")
 
-%% Equalizer training and using
+%% Channel estimation and Equalizer
 info_frame_equalized_ZF = use_ZF_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands);
 info_frame_equalized_MMSE = use_MMSE_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands, SNR_dB, 0);
 
