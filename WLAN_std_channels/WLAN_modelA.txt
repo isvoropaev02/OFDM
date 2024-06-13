@@ -1,0 +1,2 @@
+time_delay, power_gain
+0, 0
