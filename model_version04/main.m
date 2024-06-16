@@ -12,8 +12,8 @@ rng(5); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
-path_delay = [1 3 4 5 6]; % array of signal arriving delays
-path_gain_db = [0 -6 -10 -15 -12]; % average level of arriving signals in dB
+path_delay = {[1 12 13], [1 3 9 10]}; % array of signal arriving delays
+path_gain_db = {[0 -20 -23], [0 -7 -15 -17]}; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
@@ -36,24 +36,24 @@ h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
 % plot IR
 figure()
 subplot(211)
-stem(delta_t*(0:1:path_delay(end)-1)*1e9,abs(h_full(:,1,1)), 'DisplayName', 'h11')
+stem(delta_t*(0:1:size(h_full,1)-1)*1e9,abs(h_full(:,1,1)), 'DisplayName', 'h11')
 hold on
-stem(delta_t*(0:1:path_delay(end)-1)*1e9,abs(h_full(:,Nr, Nt)), 'DisplayName', 'h22')
+stem(delta_t*(0:1:size(h_full,1)-1)*1e9,abs(h_full(:,Nr, Nt)), 'DisplayName', 'h22')
 xlabel('Time [ns]')
 ylabel('h(t), abs')
 legend()
 title('Impulse response of the channel')
 subplot(212)
-stem(delta_t*(0:1:path_delay(end)-1)*1e9,rad2deg(angle(h_full(:,1,1))))
+stem(delta_t*(0:1:size(h_full,1)-1)*1e9,rad2deg(angle(h_full(:,1,1))))
 hold on
-stem(delta_t*(0:1:path_delay(end)-1)*1e9,rad2deg(angle(h_full(:,Nr, Nt))))
+stem(delta_t*(0:1:size(h_full,1)-1)*1e9,rad2deg(angle(h_full(:,Nr, Nt))))
 xlabel('Time [ns]')
 ylabel('h(t), phase (deg)')
 
 info_frame_td_channel = MIMO_convolution(info_frame_td,h_full);
 pilots_frame_td_channel = zeros(size(pilots_frame_td,1),size(h_full,2),size(pilots_frame_td,3));
 for id_t = 1:Nt
-    pilots_frame_td_channel(:,:,id_t) = MIMO_convolution(pilots_frame_td,h_full);
+    pilots_frame_td_channel(:,:,id_t) = MIMO_convolution(pilots_frame_td(:,:,id_t),h_full);
 end
 fprintf('Power_Channel = %f\n', MIMO_signal_power(info_frame_td_channel));
 

@@ -7,17 +7,23 @@ function h = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt)
 
 % Output:       h : impulse response - (Nr x Nt) matrix
 
+assert(size(path_delay,2)==Nr & size(path_gain_db,2)==Nr, "Number of delay profiles must be the same as Nr");
+
 %% channel generation
-h = zeros(path_delay(end), Nr, Nt);
-h(path_delay(end),1, 1) = 1i*0;
-L=length(path_delay);
-path_gain_lin=10.^(path_gain_db/10); % power gain in linear scale
+max_t = max([path_delay{1,1}(end) path_delay{1,2}(end)]);
+h = zeros(max_t, Nr, Nt);
+h(max_t,1, 1) = 1i*0;
 
 for id_r=1:Nr
+    L=length(path_delay{1,id_r});
+    path_gain_lin=10.^(path_gain_db{1,id_r}/10); % power gain in linear scale
     for id_t=1:Nt
         temp=(randn(1,L)+1i*randn(1,L)) ./ sqrt(2); % 1 W gain coefficients
+%         if id_t ~= id_r
+%             temp = temp*0;
+%         end
         for k=1:L
-            h(path_delay(k), id_r, id_t)=sqrt(path_gain_lin(k)).*temp(k);
+            h(path_delay{1,id_r}(k), id_r, id_t)=sqrt(path_gain_lin(k)).*temp(k);
         end
     end
 end

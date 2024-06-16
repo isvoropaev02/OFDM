@@ -24,7 +24,7 @@ output = zeros([size(frame_fd,1),size(initial_pilots,3)]);
 for k=1:size(frame_fd,1)
     y = reshape(squeeze(frame_fd(k,:)),[],1);
     % channel estimation
-    H = squeeze(recieved_pilots(k,:,:))*squeeze(initial_pilots(k,:,:));
+    H = squeeze(permute(recieved_pilots(k,:,:),[2 3 1]))*squeeze(initial_pilots(k,:,:));
     output(k, :) = (H'*H+(Nr/snr).*diag(ones([Nt,1])))\(H'*y);
 end
 
