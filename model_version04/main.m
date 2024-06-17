@@ -8,12 +8,12 @@ clear all; close all; clc
 %pkg load communications
 
 %% parameters
-rng(5); % random seed setter (for repeating the same results)
+rng(9); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
 path_delay = {[1 12 13], [1 3 9 10]}; % array of signal arriving delays
-path_gain_db = {[0 -20 -23], [0 -7 -15 -17]}; % average level of arriving signals in dB
+path_gain_db = {[0 -8 -23], [0 -7 -15 -17]}; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
@@ -33,6 +33,10 @@ fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 
 %% Channel
 h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
+% writematrix([real(h_full(:,1,1)), imag(h_full(:,1,1))], "h11.txt", "Delimiter", ",");
+% writematrix([real(h_full(:,1,2)), imag(h_full(:,1,2))], "h12.txt", "Delimiter", ",");
+% writematrix([real(h_full(:,2,1)), imag(h_full(:,2,1))], "h21.txt", "Delimiter", ",");
+% writematrix([real(h_full(:,2,2)), imag(h_full(:,2,2))], "h22.txt", "Delimiter", ",");
 % plot IR
 figure()
 subplot(211)
@@ -89,6 +93,10 @@ figure()
 hold on
 plot(real(reshape(info_frame_equalized_ZF, [], 1)), imag(reshape(info_frame_equalized_ZF, [], 1)), "*", 'DisplayName','Zero-Forcing')
 plot(real(reshape(info_frame_equalized_MMSE,[],1)), imag(reshape(info_frame_equalized_MMSE,[],1)), "*", 'DisplayName','MMSE')
+% plot(real(info_frame_equalized_ZF(:,1)), imag(info_frame_equalized_ZF(:,1)), "*", 'DisplayName','Zero-Forcing (UE1)')
+% plot(real(info_frame_equalized_ZF(:,2)), imag(info_frame_equalized_ZF(:,2)), "*", 'DisplayName','Zero-Forcing (UE2)')
+% plot(real(info_frame_equalized_MMSE(:,1)), imag(info_frame_equalized_MMSE(:,1)), "*", 'DisplayName','MMSE (UE1)')
+% plot(real(info_frame_equalized_MMSE(:,2)), imag(info_frame_equalized_MMSE(:,2)), "*", 'DisplayName','MMSE (UE2)')
 title("After equalizer")
 legend()
 xlabel('I')
