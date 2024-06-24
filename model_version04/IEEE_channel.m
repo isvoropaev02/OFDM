@@ -16,7 +16,7 @@ opts.VariableNamesLine = 1;
 df = readtable(data_path, opts);
 
 % delta in ns
-delta_t_ns = 1/sample_rate*1e9;
+delta_t_ns = 1*sample_rate*1e9;
 max_time_idx = round(df.time_delay(end)/delta_t_ns)+1;
 
 path_delay_full = (1:1:max_time_idx);
@@ -28,6 +28,12 @@ end
 
 path_delay=path_delay_full(~~power_gain_abs);
 power_gain = 10*log10(power_gain_abs(~~power_gain_abs));
+
+figure()
+stem(path_delay, 10.^(power_gain/20))
+xlabel("Time Samples")
+ylabel('Delay Profile, abs value')
+title("IEEE Model "+Model)
 
 end
 
