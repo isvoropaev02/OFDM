@@ -8,4 +8,7 @@ Two equalizers are available - ZF and MMSE. Absolute frequency in band is specif
 SIMO 1x2 is available in a spatial diversity mode. Comparison of SISO and 1x2 SIMO system. PSD estimation of output Tx signal.
 
 ---verion 0.4.---
-SIMO 1xNr is available in a spatial diversity mode.
+MIMO NtxNr is available in a spatial diversity mode. WiFi parameters.
+
+---verion 0.5.---
+MU MIMO NtxNr is available. 5G NR parameters.

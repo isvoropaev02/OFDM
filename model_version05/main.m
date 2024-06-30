@@ -18,12 +18,16 @@ Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
 % values from IEEE 802.11a for 20 MHz band
-Bw = 20*10^6; % Hz -- Bandwidth
-fr_len = 64; % the length of OFDM frame
-delta_f = Bw/fr_len; % Hz -- band between neighbouring subcarriers (312.5 kHz)
-Ts = 1/delta_f; % sec -- duration of the frame (3.2 us)
-delta_t = 1/Bw; % sec -- time interval between signal samples 
-cp_length = fr_len/2; % the size of cyclic prefix (1.6 us)
+fr_len = 1200; % the length of OFDM frame
+n_fft = 2048;
+delta_f = 15*1e3; % Hz -- band between neighbouring subcarriers
+Ts = 1/delta_f; % sec -- duration of the frame
+delta_t = Ts/n_fft; % sec -- time interval between signal samples 
+
+Bw = fr_len*delta_f; % Hz -- Bandwidth
+
+cp_length = 144; % the size of cyclic prefix
+cp_duration = delta_t*cp_length; % the duration of cyclic prefix (not used)
 guard_bands = [1 29 30 31 32 33 34 35 36];% guard band {-32 -31 -30 -29 0 28 29 30 31} subcarriers
 
 %% Tx signals
@@ -33,10 +37,6 @@ fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 
 %% Channel
 h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
-% writematrix([real(h_full(:,1,1)), imag(h_full(:,1,1))], "h11.txt", "Delimiter", ",");
-% writematrix([real(h_full(:,1,2)), imag(h_full(:,1,2))], "h12.txt", "Delimiter", ",");
-% writematrix([real(h_full(:,2,1)), imag(h_full(:,2,1))], "h21.txt", "Delimiter", ",");
-% writematrix([real(h_full(:,2,2)), imag(h_full(:,2,2))], "h22.txt", "Delimiter", ",");
 % plot IR
 figure()
 subplot(211)
