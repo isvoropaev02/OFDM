@@ -1,38 +1,34 @@
 % main performance file
 % result of each block is written into .txt file
 
-% 11.06.2024
+% 11.08.2024
 % nuber of Rx and Tx antennas can be arbitrary
 
 clear all; close all; clc
+addpath(genpath('src'))
 %pkg load communications
 
 %% parameters
 rng(1); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
-SNR_dB = 20; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 40; % [dBW] the signal power is normalized to 1 W
 path_delay = {[1 12 13], [1 3 9 10]}; % array of signal arriving delays
 path_gain_db = {[0 -8 -23], [0 -7 -15 -17]}; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
-% values from IEEE 802.11a for 20 MHz band
-fr_len = 1200; % the length of OFDM frame
-n_fft = 2048;
-delta_f = 15*1e3; % Hz -- band between neighbouring subcarriers
-Ts = 1/delta_f; % sec -- duration of the frame
-delta_t = Ts/n_fft; % sec -- time interval between signal samples 
+% spectral parameters
+channel_bw = 20*1e6; % Hz
+scs = 15*1e3; % Hz - subcarrier spacing
 
-Bw = fr_len*delta_f; % Hz -- Bandwidth
+% values from 3GPP TS 38.104
+[fr_len, n_ifft, delta_t, cp_len, guard_bands] = get_params_from_nr_configuration(channel_bw, scs);
 
-cp_length = 144; % the size of cyclic prefix
-cp_duration = delta_t*cp_length; % the duration of cyclic prefix (not used)
-guard_bands = [1 29 30 31 32 33 34 35 36];% guard band {-32 -31 -30 -29 0 28 29 30 31} subcarriers
 
 %% Tx signals
-[info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, cp_length, guard_bands);
-[pilots_frame_td, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, cp_length, guard_bands);
+[info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, cp_len, guard_bands);
+[pilots_frame_td, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, cp_len, guard_bands);
 fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 
 %% Channel
@@ -70,10 +66,10 @@ end
 fprintf('Power_Rx = %f\n', MIMO_signal_power(info_frame_td_noise));
 
 %% Rx signals
-info_frame_fd = MIMO_Rx_signal_to_fd(info_frame_td_noise, fr_len, cp_length, guard_bands);
+info_frame_fd = MIMO_Rx_signal_to_fd(info_frame_td_noise, fr_len, cp_len, guard_bands);
 pilots_frame_fd = zeros(fr_len-length(guard_bands), size(pilots_frame_td_channel,2), size(pilots_frame_td_channel,3));
 for id_t = 1:Nt
-    pilots_frame_fd(:,:,id_t) = MIMO_Rx_signal_to_fd(pilots_frame_td_noise(:,:,id_t), fr_len, cp_length, guard_bands);
+    pilots_frame_fd(:,:,id_t) = MIMO_Rx_signal_to_fd(pilots_frame_td_noise(:,:,id_t), fr_len, cp_len, guard_bands);
 end
 
 figure()
@@ -93,10 +89,6 @@ figure()
 hold on
 plot(real(reshape(info_frame_equalized_ZF, [], 1)), imag(reshape(info_frame_equalized_ZF, [], 1)), "*", 'DisplayName','Zero-Forcing')
 plot(real(reshape(info_frame_equalized_MMSE,[],1)), imag(reshape(info_frame_equalized_MMSE,[],1)), "*", 'DisplayName','MMSE')
-% plot(real(info_frame_equalized_ZF(:,1)), imag(info_frame_equalized_ZF(:,1)), "*", 'DisplayName','Zero-Forcing (UE1)')
-% plot(real(info_frame_equalized_ZF(:,2)), imag(info_frame_equalized_ZF(:,2)), "*", 'DisplayName','Zero-Forcing (UE2)')
-% plot(real(info_frame_equalized_MMSE(:,1)), imag(info_frame_equalized_MMSE(:,1)), "*", 'DisplayName','MMSE (UE1)')
-% plot(real(info_frame_equalized_MMSE(:,2)), imag(info_frame_equalized_MMSE(:,2)), "*", 'DisplayName','MMSE (UE2)')
 title("After equalizer")
 legend()
 xlabel('I')
