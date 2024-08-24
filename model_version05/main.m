@@ -13,18 +13,23 @@ rng(1); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 23; % [dBW] the signal power is normalized to 1 W
-path_delay = {[1 20 50], [1 30 85]}; % array of signal arriving delays
-path_gain_db = {[0 -7 -16], [0 -5 -19 -23]}; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
 % spectral parameters
-channel_bw = 5*1e6; % Hz
+channel_bw = 20*1e6; % Hz
 scs = 15*1e3; % Hz - subcarrier spacing
 
 % values from 3GPP TS 38.104
 [fr_len, n_ifft, delta_t, cp_len, guard_bands] = get_params_from_nr_configuration(channel_bw, scs);
 
+% path_delay = {[1 20 50], [1 6], [1 9 30], [1 90]}; % array of signal arriving delays
+% path_gain_db = {[0 -7 -16], [0 -40], [-6 -8 -30], [-1 -32]}; % average level of arriving signals in dB
+path_delay = cell(1,Nr);
+path_gain_db = cell(1,Nr);
+for ii=1:Nr
+    [path_delay{1,ii},path_gain_db{1,ii}] = nr_TDL_channel('A', 60*ii*1e-9, 1/delta_t);
+end
 
 %% Tx signals
 [info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, n_ifft, cp_len, guard_bands);

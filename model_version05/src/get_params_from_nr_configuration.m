@@ -5,8 +5,7 @@ function [num_sc, n_ifft, delta_t, cp_len, guard_bands] = get_params_from_nr_con
 
 % Outputs: num_sc - number of sc to use
 %          n_ifft - IFFT size
-%          scs    - subcarrier spacing [Hz]
-%          bw     - channel bandwidth [Hz]
+%          delta_t - time step [s]
 %          cp_len - size of cyclic prefix
 %          guard_bands - subcarriers to remain unused
 
