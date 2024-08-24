@@ -6,7 +6,7 @@ num_of_frames = 20; % must be even --> 50 pilot frames with 50 info frames
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 
 % spectral parameters
-channel_bw = 5*1e6; % Hz
+channel_bw = 20*1e6; % Hz
 scs = 15*1e3; % Hz - subcarrier spacing
 
 % values from 3GPP TS 38.104
@@ -19,8 +19,8 @@ for k=1:2:num_of_frames
     message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
     info_frame = generate_information_frame(message, M, guard_bands); % creating frame
     pilots_frame = generate_pilots_frame(fr_len, guard_bands);
-    info_frame_td = add_cyclic_prefix(ifft(info_frame, n_ifft).*fr_len, cp_len);
-    pilots_frame_td = add_cyclic_prefix(ifft(pilots_frame, n_ifft).*fr_len, cp_len);
+    info_frame_td = convert_to_time_domain(info_frame, n_ifft, cp_len);
+    pilots_frame_td = convert_to_time_domain(pilots_frame, n_ifft, cp_len);
     full_signal(:,k) = pilots_frame_td;
     full_signal(:,k+1) = info_frame_td;
 end
@@ -30,7 +30,6 @@ L = length(full_signal);
 
 %% Using pwelch to estimate PSD
 [psd, freq] = pwelch(full_signal,hamming(floor(L/256)),floor(L/512),2048, 1/delta_t); % Hamming window, two-sided psd estimate, 50% overlap 
-%[psd, freq] = pwelch(full_signal);
 figure(1)
 plot((freq-freq(end)/2)*1e-6,fftshift(10*log10(psd)))
 xlabel('Frequency [MHz]')

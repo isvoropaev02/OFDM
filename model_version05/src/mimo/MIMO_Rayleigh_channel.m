@@ -10,7 +10,12 @@ function h = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt)
 assert(size(path_delay,2)==Nr & size(path_gain_db,2)==Nr, "Number of delay profiles must be the same as Nr");
 
 %% channel generation
-max_t = max([path_delay{1,1}(end) path_delay{1,2}(end)]);
+max_t = 0;
+for ii = size(path_delay,2)
+    if path_delay{1,ii}(end) > max_t
+        max_t = path_delay{1,ii}(end);
+    end
+end
 h = zeros(max_t, Nr, Nt);
 h(max_t,1, 1) = 1i*0;
 

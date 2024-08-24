@@ -12,14 +12,14 @@ addpath(genpath('src'))
 rng(1); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
-SNR_dB = 40; % [dBW] the signal power is normalized to 1 W
-path_delay = {[1 12 13], [1 3 9 10]}; % array of signal arriving delays
-path_gain_db = {[0 -8 -23], [0 -7 -15 -17]}; % average level of arriving signals in dB
+SNR_dB = 23; % [dBW] the signal power is normalized to 1 W
+path_delay = {[1 20 50], [1 30 85]}; % array of signal arriving delays
+path_gain_db = {[0 -7 -16], [0 -5 -19 -23]}; % average level of arriving signals in dB
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
 % spectral parameters
-channel_bw = 20*1e6; % Hz
+channel_bw = 5*1e6; % Hz
 scs = 15*1e3; % Hz - subcarrier spacing
 
 % values from 3GPP TS 38.104
@@ -27,8 +27,8 @@ scs = 15*1e3; % Hz - subcarrier spacing
 
 
 %% Tx signals
-[info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, cp_len, guard_bands);
-[pilots_frame_td, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, cp_len, guard_bands);
+[info_frame_td,message,info_frame] = MIMO_generate_output_info_signal(Nt, M, fr_len, n_ifft, cp_len, guard_bands);
+[pilots_frame_td, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, n_ifft, cp_len, guard_bands);
 fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 
 %% Channel
@@ -36,19 +36,20 @@ h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
 % plot IR
 figure()
 subplot(211)
-stem(delta_t*(0:1:size(h_full,1)-1)*1e9,abs(h_full(:,1,1)), 'DisplayName', 'h11')
+stem(delta_t*(0:1:size(h_full,1)-1)*1e6,abs(h_full(:,1,1)),'.', 'DisplayName', 'h11')
 hold on
-stem(delta_t*(0:1:size(h_full,1)-1)*1e9,abs(h_full(:,Nr, Nt)), 'DisplayName', 'h22')
-xlabel('Time [ns]')
+stem(delta_t*(0:1:size(h_full,1)-1)*1e6,abs(h_full(:,Nr, Nt)),'.', 'DisplayName', 'h22')
+xlabel('Time [us]')
 ylabel('h(t), abs')
 legend()
 title('Impulse response of the channel')
 subplot(212)
-stem(delta_t*(0:1:size(h_full,1)-1)*1e9,rad2deg(angle(h_full(:,1,1))))
+stem(delta_t*(0:1:size(h_full,1)-1)*1e6,rad2deg(angle(h_full(:,1,1))),'.')
 hold on
-stem(delta_t*(0:1:size(h_full,1)-1)*1e9,rad2deg(angle(h_full(:,Nr, Nt))))
-xlabel('Time [ns]')
+stem(delta_t*(0:1:size(h_full,1)-1)*1e6,rad2deg(angle(h_full(:,Nr, Nt))),'.')
+xlabel('Time [us]')
 ylabel('h(t), phase (deg)')
+grid('on')
 
 info_frame_td_channel = MIMO_convolution(info_frame_td,h_full);
 pilots_frame_td_channel = zeros(size(pilots_frame_td,1),size(h_full,2),size(pilots_frame_td,3));
@@ -67,7 +68,7 @@ fprintf('Power_Rx = %f\n', MIMO_signal_power(info_frame_td_noise));
 
 %% Rx signals
 info_frame_fd = MIMO_Rx_signal_to_fd(info_frame_td_noise, fr_len, cp_len, guard_bands);
-pilots_frame_fd = zeros(fr_len-length(guard_bands), size(pilots_frame_td_channel,2), size(pilots_frame_td_channel,3));
+pilots_frame_fd = zeros(fr_len-length(guard_bands), size(pilots_frame_td_noise,2), size(pilots_frame_td_noise,3));
 for id_t = 1:Nt
     pilots_frame_fd(:,:,id_t) = MIMO_Rx_signal_to_fd(pilots_frame_td_noise(:,:,id_t), fr_len, cp_len, guard_bands);
 end
