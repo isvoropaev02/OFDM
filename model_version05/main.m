@@ -12,7 +12,7 @@ addpath(genpath('src'))
 rng(1); % random seed setter (for repeating the same results)
 
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
-SNR_dB = 23; % [dBW] the signal power is normalized to 1 W
+SNR_dB = 30; % [dBW] the signal power is normalized to 1 W
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
@@ -28,7 +28,7 @@ scs = 15*1e3; % Hz - subcarrier spacing
 path_delay = cell(1,Nr);
 path_gain_db = cell(1,Nr);
 for ii=1:Nr
-    [path_delay{1,ii},path_gain_db{1,ii}] = nr_TDL_channel('A', 60*ii*1e-9, 1/delta_t);
+    [path_delay{1,ii},path_gain_db{1,ii}] = nr_TDL_channel('A', 30*ii*1e-9, 1/delta_t);
 end
 
 %% Tx signals
@@ -39,7 +39,7 @@ fprintf('Power_Tx = %f\n', MIMO_signal_power(info_frame_td));
 %% Channel
 h_full = MIMO_Rayleigh_channel(path_delay, path_gain_db, Nr, Nt);
 % plot IR
-figure()
+figure('Position',[100 100 800 600])
 subplot(211)
 stem(delta_t*(0:1:size(h_full,1)-1)*1e6,abs(h_full(:,1,1)),'.', 'DisplayName', 'h11')
 hold on
@@ -78,27 +78,27 @@ for id_t = 1:Nt
     pilots_frame_fd(:,:,id_t) = MIMO_Rx_signal_to_fd(pilots_frame_td_noise(:,:,id_t), fr_len, cp_len, guard_bands);
 end
 
-figure()
+figure('Position',[100 100 800 600])
 plot(real(reshape(info_frame_fd, [], 1)), imag(reshape(info_frame_fd, [], 1)), "*", 'DisplayName','information frame', 'Color', 'black')
 hold on
 plot(real(reshape(pilots_frame_fd, [], 1, 1)), imag(reshape(pilots_frame_fd, [], 1, 1)), "*", 'DisplayName','pilots frame', 'Color', 'green')
 legend()
 xlabel('I')
 ylabel('Q')
-title("Before equalizer")
+title("Before equalizer (SNR="+string(SNR_dB)+" dB)")
 
 %% Channel estimation and Equalizer
 info_frame_equalized_ZF = use_ZF_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands);
 info_frame_equalized_MMSE = use_MMSE_equalizer(info_frame_fd, pilots_frame, pilots_frame_fd, guard_bands,SNR_dB, 0);
 
-figure()
-hold on
+figure('Position',[100 100 800 600])
 plot(real(reshape(info_frame_equalized_ZF, [], 1)), imag(reshape(info_frame_equalized_ZF, [], 1)), "*", 'DisplayName','Zero-Forcing')
+hold on
 plot(real(reshape(info_frame_equalized_MMSE,[],1)), imag(reshape(info_frame_equalized_MMSE,[],1)), "*", 'DisplayName','MMSE')
-title("After equalizer")
 legend()
 xlabel('I')
 ylabel('Q')
+title("After equalizer")
 
 %% Decoded message from frame in frequency domain (block "Demodulator")
 decoded_message_ZF = MIMO_decode_frame(info_frame_equalized_ZF, M); % decoding frame

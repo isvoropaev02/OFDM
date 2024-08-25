@@ -27,11 +27,12 @@ path_delay=path_delay_full(~~power_gain_abs);
 power_gain = 10*log10(power_gain_abs(~~power_gain_abs));
 power_gain = power_gain-max(power_gain);
 
-figure()
+figure('Position',[100 100 800 600])
 stem(path_delay, 10.^(power_gain/20))
 xlabel("Time Samples")
 ylabel('Delay Profile, abs value')
-title("NR TDL-"+Model+" Model ")
+grid('on')
+title("NR TDL-"+Model+" Model (delta t="+string(delta_t*1e9)+" ns; delay spread="+string(delay_spread*1e9)+" ns)")
 
 end
 

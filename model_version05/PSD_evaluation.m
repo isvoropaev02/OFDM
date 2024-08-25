@@ -1,16 +1,18 @@
 clear all; close all;
-% estimation of PSD of single transmitter output OFDM signal
-% 06.06.2024.
+addpath('src')
+% PSD of single transmitt antenna output OFDM signal
+% 25.08.2024. - NR parameters for scs=15kHz
 
-num_of_frames = 20; % must be even --> 50 pilot frames with 50 info frames
+num_of_frames = 50; % must be even --> 50 pilot frames with 50 info frames
 M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 
 % spectral parameters
-channel_bw = 20*1e6; % Hz
+channel_bw = 10*1e6; % Hz
 scs = 15*1e3; % Hz - subcarrier spacing
 
 % values from 3GPP TS 38.104
-[fr_len, n_ifft, delta_t, cp_len, guard_bands] = get_params_from_nr_configuration(channel_bw, scs);
+[fr_len, n_ifft, delta_t, cp_len, guard_bands] =...
+    get_params_from_nr_configuration(channel_bw, scs);
 
 
 %% forming output signal
@@ -30,11 +32,12 @@ L = length(full_signal);
 
 %% Using pwelch to estimate PSD
 [psd, freq] = pwelch(full_signal,hamming(floor(L/256)),floor(L/512),2048, 1/delta_t); % Hamming window, two-sided psd estimate, 50% overlap 
-figure(1)
-plot((freq-freq(end)/2)*1e-6,fftshift(10*log10(psd)))
+figure('Position',[100 100 800 600])
+plot((freq-freq(end)/2)*1e-6,fftshift(10*log10(psd)), 'LineWidth',1)
 xlabel('Frequency [MHz]')
 ylabel('PSD [dB]')
-title('Welch’s power spectral density estimate')
+grid('on')
+title("Welch's PSD estimate (BW="+string(channel_bw*1e-6)+" MHz)")
 
 %% plot hamming window
 % Hs = hamming(64,'symmetric');
