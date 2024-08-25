@@ -4,14 +4,14 @@
 % 11.08.2024
 % nuber of Rx and Tx antennas can be arbitrary
 
-clear all; close all; clc
+clear all; clc; close all;
 addpath(genpath('src'))
 %pkg load communications
 
 %% parameters
 rng(1); % random seed setter (for repeating the same results)
 
-M = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
+M = 64; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 30; % [dBW] the signal power is normalized to 1 W
 Nr = 2; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
@@ -28,7 +28,7 @@ scs = 15*1e3; % Hz - subcarrier spacing
 path_delay = cell(1,Nr);
 path_gain_db = cell(1,Nr);
 for ii=1:Nr
-    [path_delay{1,ii},path_gain_db{1,ii}] = nr_TDL_channel('A', 30*ii*1e-9, 1/delta_t);
+    [path_delay{1,ii},path_gain_db{1,ii}] = nr_TDL_channel('A', 60*ii*1e-9, 1/delta_t);
 end
 
 %% Tx signals
