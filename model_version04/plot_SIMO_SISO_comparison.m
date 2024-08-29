@@ -88,4 +88,3 @@ legend()
 % fprintf(fileID,'%f, %f, %f, %f, %f, %f, %f, %f, %f\n', [SNR_dB'; ber_ZF_SISO'; ber_MMSE_SISO'; evm_ZF_SISO'; ...
 %     evm_MMSE_SISO'; ber_ZF_SIMO'; ber_MMSE_SIMO'; evm_ZF_SIMO'; evm_MMSE_SIMO']);
 % fclose(fileID);
-

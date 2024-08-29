@@ -10,8 +10,8 @@ config = struct();
 
 config.modulator_order = 4; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 config.SNR_dB = 30; % [dBW] the signal power is normalized to 1 W
-config.Nr = 2; % number of recieve antennas
-config.Nt = 2; % number of transmitt antennas
+config.Nr = 4; % number of recieve antennas
+config.Nt = 1; % number of transmitt antennas
 config.TDL_channel = "A"; % ["A", "B", "C"]
 
 % spectral parameters
@@ -66,3 +66,10 @@ xlabel("SNR [dB]")
 ylabel("EVM [dB]")
 grid('on')
 legend()
+
+% fileID = fopen("mimo_"+string(config.Nt)+"x"+string(config.Nr)+"_QAM"+string(config.modulator_order)+".txt",'w');
+% fprintf(fileID,'%s, %s, %s, %s, %s\n', "SNR_dB", ...
+%     "BER_ZF", "BER_MMSE", "EVM_ZF", "EVM_MMSE");
+% fprintf(fileID,'%f, %f, %f, %f, %f\n', [snr_set; ...
+%     ber_ZF_final'; ber_MMSE_final'; evm_ZF_final'; evm_MMSE_final']);
+% fclose(fileID);

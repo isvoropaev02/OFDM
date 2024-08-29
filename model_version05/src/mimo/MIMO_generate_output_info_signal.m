@@ -14,7 +14,7 @@ info_frame_full = zeros(fr_len, Nt);
 for id_t = 1:Nt
     message = randi([0 M-1], fr_len-length(guard_bands), 1); % decimal information symbols
     info_frame = generate_information_frame(message, M, guard_bands); % creating frame
-    output_signal(:,id_t) = convert_to_time_domain(info_frame, n_ifft, cp_len);
+    output_signal(:,id_t) = convert_to_time_domain(info_frame, n_ifft, cp_len)./sqrt(Nt);
     message_full(:,id_t) = message;
     info_frame_full(:,id_t) = info_frame;
 end

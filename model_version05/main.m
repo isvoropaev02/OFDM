@@ -13,7 +13,7 @@ rng(1); % random seed setter (for repeating the same results)
 
 M = 64; % e.g. 2, 4, 8 -> PSK; 16, 64... -> QAM
 SNR_dB = 30; % [dBW] the signal power is normalized to 1 W
-Nr = 2; % number of recieve antennas
+Nr = 3; % number of recieve antennas
 Nt = 2; % number of transmitt antennas
 
 % spectral parameters

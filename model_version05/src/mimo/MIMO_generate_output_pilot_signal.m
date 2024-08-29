@@ -12,7 +12,7 @@ output_signal = zeros(n_ifft+cp_len, Nt, Nt);
 pilots_frame = zeros(fr_len, Nt, Nt);
 pilots_frame_single = generate_pilots_frame(fr_len, guard_bands);
 for id_t = 1:Nt
-    output_signal(:,id_t, id_t) = convert_to_time_domain(pilots_frame_single, n_ifft, cp_len);
+    output_signal(:,id_t, id_t) = convert_to_time_domain(pilots_frame_single, n_ifft, cp_len)./sqrt(Nt);
     pilots_frame(:,id_t, id_t) = pilots_frame_single;
 end
 
