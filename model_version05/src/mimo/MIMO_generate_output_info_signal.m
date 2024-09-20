@@ -3,7 +3,8 @@ function [output_signal,message_full, info_frame_full] = MIMO_generate_output_in
 % Inputs:       Nt          : Number of transmitt antennas
 %               M           : Modulation order
 %               fr_len      : The length of frame
-%               cp_len   : The length of cyclic prefix (expected value = frame_size/2)
+%               n_iift      : number of samples in time domain signal
+%               cp_len      : The length of cyclic prefix (expected value = frame_size/2)
 %               guard_bands : Unused subcarriers
 
 % Output:       frame_with_prefix : frame in time domain with prefix

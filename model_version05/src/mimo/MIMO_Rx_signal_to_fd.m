@@ -2,7 +2,7 @@ function frame_fd = MIMO_Rx_signal_to_fd(signal_td, fr_len, cp_len, null_subcarr
 % deletes cyclic prefix, performs fft of recieved signal and removes NULL subcarriers
 % Inputs:       signal_td   : recieved signal in time-domain
 %               fr_len      : the length of frame
-%               cp_len   : The length of cyclic prefix (expected value = frame_size/2)
+%               cp_len      : The length of cyclic prefix
 %               null_subcarriers : not used subcarriers
 
 % Output:       frame_fd    : frame in frequency domain

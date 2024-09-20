@@ -2,6 +2,7 @@ function frame = generate_information_frame(message, M, null_subcarriers)
 % Assebles the frame according to the structure
 % Inputs:       message   : Array of information bytes or numbers
 %               M         : The order of the modulator (2, 4, 8, 16...)
+%               null_subcarriers : subcarriers with 0 symbol
 
 % Output:       frame : Aray of symbols with the frmae structure
 

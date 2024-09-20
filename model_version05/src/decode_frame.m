@@ -10,7 +10,6 @@ if M >= 16
     message = qamdemod(frame, M, UnitAveragePower=true);
 else
     message = pskdemod(frame, M, pi/M);
-    %decoded_message(k) = qamdemod(frame(inf_idx(k)), M, UnitAveragePower=true);
 end
 
 end

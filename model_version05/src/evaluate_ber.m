@@ -2,6 +2,7 @@ function ber = evaluate_ber(original_message, decoded_message, M)
     %evaluates BER
     % Inputs:       original_message  : Transmitted message (integers)
     %               decoded_message   : Decoded message at the reciever (integers)
+    %               M                 : Modulator order
     
     % Output:       ber : the ratio of number of bit errors to the total number of transmitted bits
     
@@ -20,4 +21,4 @@ function ber = evaluate_ber(original_message, decoded_message, M)
 end
 
 % 1.04.24.
-% a bug with vec1 vec2 improved
+% a bug with vec1 vec2 fixed

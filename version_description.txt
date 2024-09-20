@@ -11,4 +11,5 @@ SIMO 1x2 is available in a spatial diversity mode. Comparison of SISO and 1x2 SI
 MIMO NtxNr is available in a spatial diversity mode. WiFi parameters.
 
 ---verion 0.5.---
-MU MIMO NtxNr is available. 5G NR parameters.
+MU MIMO NtxNr is available (Only Nt<=Nr configurations are supported). 5G NR parameters.
+Different channel bandwidths are available with subcarrier spacing of 15 kHz.

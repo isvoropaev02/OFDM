@@ -3,6 +3,7 @@ function output = use_ZF_equalizer(frame_fd, initial_pilots_full, recieved_pilot
 % Inputs:       frame_fd        : Information frame in frequency domain
 %               initial_pilots  : pilot symbols which are generated in transmitter
 %               recieved_pilots : pilot symbols which are recieved
+%               null_subcarriers: subcarriers with 0 symbols
 
 % Output:       output_signal : Signal after ZF equalization
 

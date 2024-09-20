@@ -1,10 +1,9 @@
 function h = Rayleigh_channel(path_delay, path_gain_db)
 % generates IR of Rayleigh channel
-% Inputs:       input_signal  : Signal in time domain
-%               path_delay    : Array of time delays of the signal arrival to reciever
+% Inputs:       path_delay    : Array of time delays of the signal arrival to reciever
 %               path_gain_db  : Array of level of delayed singals
 
-% Output:       h : impulse response
+% Output:       h : impulse response of the channel
 
 %% channel generation
 h = zeros(path_delay(end), 1);

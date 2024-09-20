@@ -1,12 +1,12 @@
-% main performance file
-% result of each block is written into .txt file
+% main performance file - run the model of 1 OFDM symbol transmission and reception
+% result of each block can be written into .txt file
 
 % 11.08.2024
 % nuber of Rx and Tx antennas can be arbitrary
 
 clear all; clc; close all;
 addpath(genpath('src'))
-%pkg load communications
+%pkg load communications % for octave
 
 %% parameters
 rng(1); % random seed setter (for repeating the same results)

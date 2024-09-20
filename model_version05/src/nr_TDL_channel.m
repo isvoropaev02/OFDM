@@ -4,7 +4,7 @@ function [path_delay, power_gain] = nr_TDL_channel(Model, delay_spread, sample_r
 %               delay_spread : RMS of delay times
 %               sample_rate_Hz  : Sample rate of transmitted signal in time domain
 
-% Output:       channel_IR   : impulse response
+% Output:       [path_delay, power_gain] : delay profile of the NR channel
 
 assert(ismember(Model, ["A", "B", "C", "D", "E"]), "There is no model '"+Model+"' in IEEE standart models");
 

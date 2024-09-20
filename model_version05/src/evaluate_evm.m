@@ -2,6 +2,7 @@ function evm = evaluate_evm(frame_recieved, frame_original, null_subcarriers)
 %evaluates EVM
 % Inputs:       frame_recieved  : Decoded signal in FD at the reciever (integers)
 %               frame_original  : Transmitted signal in FD (integers)
+%               null_subcarriers : subcarriers with 0 symbol
 
 % Output:       evm : the MSE of recieved signal in minus transmitted signal in FD
 

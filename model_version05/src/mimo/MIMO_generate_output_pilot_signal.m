@@ -1,9 +1,9 @@
 function [output_signal, pilots_frame] = MIMO_generate_output_pilot_signal(Nt, fr_len, n_ifft, cp_len, guard_bands)
 % forms an ouput signal from all transmitt antennas
 % Inputs:       Nt          : Number of transmitt antennas
-%               M           : Modulation order
 %               fr_len      : The length of frame
-%               cp_len   : The length of cyclic prefix (expected value = frame_size/2)
+%               n_iift      : number of samples in time domain signal
+%               cp_len      : The length of cyclic prefix
 %               guard_bands : Unused subcarriers
 
 % Output:       frame_with_prefix : frame in time domain with prefix

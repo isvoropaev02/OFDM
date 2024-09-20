@@ -27,3 +27,5 @@ used_sc = 12*df.num_RB(df.bw==bw*1e-6);
 unused_sc = num_sc-used_sc;
 guard_bands = ((num_sc/2-unused_sc/2+1):1:(num_sc/2+unused_sc/2));
 end
+
+%16.06.2024. function created

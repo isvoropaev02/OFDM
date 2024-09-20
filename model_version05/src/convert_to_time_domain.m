@@ -1,5 +1,10 @@
 function signal = convert_to_time_domain(frame, n_ifft, cp_len)
 % converts the frame to time domain with n_ifft points
+% Inputs:       frame   : OFDM symbols in frequency domain
+%               n_iift  : number of samples in time domain signal
+%               cp_len  : the length of cyclic prefix
+
+% Output:       signal  : Array of signal samples in time domain
 
 fr_len = size(frame,1);
 assert(mod(fr_len,2)==0, "fr_len should be even integer number")

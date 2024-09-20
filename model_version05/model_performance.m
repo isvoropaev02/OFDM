@@ -1,5 +1,5 @@
 % 25.08.2024
-% created
+% function runs model multiple times and obtains BER and EVM metrics
 clear all; close all; clc
 addpath(genpath('src'))
 
